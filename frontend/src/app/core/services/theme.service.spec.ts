@@ -19,3 +19,4 @@ describe('ThemeService', () => {
     expect(service.currentTheme()).toBe(initial === 'dark' ? 'light' : 'dark');
   });
 });
+

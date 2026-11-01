@@ -35,3 +35,4 @@ export class RegisterDto {
   @IsString({ message: 'La descripción breve debe ser una cadena de texto' })
   bio?: string;
 }
+

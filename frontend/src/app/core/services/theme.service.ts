@@ -37,3 +37,4 @@ export class ThemeService {
     return 'dark';
   }
 }
+

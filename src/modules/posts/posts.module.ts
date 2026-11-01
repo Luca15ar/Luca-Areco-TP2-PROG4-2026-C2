@@ -11,3 +11,4 @@ import { PostsController } from './posts.controller.js';
   exports: [PostsService],
 })
 export class PostsModule {}
+

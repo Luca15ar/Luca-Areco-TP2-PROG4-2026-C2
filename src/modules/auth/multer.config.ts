@@ -31,3 +31,4 @@ export const multerAvatarOptions = {
     callback(null, true);
   },
 };
+
