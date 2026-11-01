@@ -1,0 +1,261 @@
+<div class="register-page-wrapper">
+  <div class="register-card trama-card">
+    <!-- Encabezado interno con logotipo y enlace -->
+    <div class="card-top-nav">
+      <span class="card-brand">trama.</span>
+      <a routerLink="/login" class="btn-link top-link">Ya tengo cuenta</a>
+    </div>
+
+    <div class="register-layout">
+      <!-- Columna izquierda: Presentación -->
+      <div class="presentation-column">
+        <div class="presentation-content">
+          <p class="presentation-subtitle">Bienvenido a Trama</p>
+          <h1 class="presentation-title">Historias que se quedan contigo.</h1>
+          <p class="presentation-description">
+            Un espacio reflexivo y cercano para compartir lecturas, ideas y perspectivas. Conecta con otros apasionados de las buenas historias.
+          </p>
+
+          <div class="presentation-perks">
+            <div class="perk-item">
+              <span class="perk-bullet">✦</span>
+              <span>Publicaciones sin distracciones ni algoritmos invasivos.</span>
+            </div>
+            <div class="perk-item">
+              <span class="perk-bullet">✦</span>
+              <span>Diseño pensado para la lectura y la interacción cuidada.</span>
+            </div>
+            <div class="perk-item">
+              <span class="perk-bullet">✦</span>
+              <span>Comunidad de autores y lectores auténticos.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha: Formulario reactivo -->
+      <div class="form-column">
+        @if (errorMessage()) {
+          <div class="alert-banner-error" role="alert">
+            <span class="alert-icon">⚠️</span>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        @if (successMessage()) {
+          <div class="alert-banner-success" role="status">
+            <span class="alert-icon">✓</span>
+            <span>{{ successMessage() }}</span>
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" novalidate>
+          <!-- Fila de Nombre y Apellido -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="firstName" class="form-label">Nombre</label>
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                class="form-input"
+                placeholder="Tu nombre"
+                autocomplete="given-name"
+              />
+              @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.errors?.['required']) {
+                <span class="form-error">El nombre es obligatorio.</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="lastName" class="form-label">Apellido</label>
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                class="form-input"
+                placeholder="Tu apellido"
+                autocomplete="family-name"
+              />
+              @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.errors?.['required']) {
+                <span class="form-error">El apellido es obligatorio.</span>
+              }
+            </div>
+          </div>
+
+          <!-- Fila de Correo y Nombre de usuario -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="email" class="form-label">Correo</label>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="form-input"
+                placeholder="ejemplo@correo.com"
+                autocomplete="email"
+              />
+              @if (registerForm.get('email')?.touched) {
+                @if (registerForm.get('email')?.errors?.['required']) {
+                  <span class="form-error">El correo es obligatorio.</span>
+                } @else if (registerForm.get('email')?.errors?.['email']) {
+                  <span class="form-error">Ingresa un correo electrónico válido.</span>
+                }
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="username" class="form-label">Nombre de usuario</label>
+              <input
+                id="username"
+                type="text"
+                formControlName="username"
+                class="form-input"
+                placeholder="nombredeusuario"
+                autocomplete="username"
+              />
+              @if (registerForm.get('username')?.touched) {
+                @if (registerForm.get('username')?.errors?.['required']) {
+                  <span class="form-error">El nombre de usuario es obligatorio.</span>
+                } @else if (registerForm.get('username')?.errors?.['pattern']) {
+                  <span class="form-error">Solo letras, números, puntos y guiones.</span>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Fila de Contraseñas -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="password" class="form-label">Contraseña</label>
+              <div class="password-input-wrapper">
+                <input
+                  id="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  class="form-input"
+                  placeholder="Mínimo 8 caracteres"
+                  autocomplete="new-password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle-btn"
+                  (click)="togglePasswordVisibility()"
+                  [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Ver contraseña'"
+                >
+                  {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
+                </button>
+              </div>
+              <span class="form-hint">Mínimo 8 caracteres, 1 mayúscula y 1 número.</span>
+              @if (registerForm.get('password')?.touched) {
+                @if (registerForm.get('password')?.errors?.['required']) {
+                  <span class="form-error">La contraseña es obligatoria.</span>
+                } @else if (registerForm.get('password')?.errors?.['minlength'] || registerForm.get('password')?.errors?.['pattern']) {
+                  <span class="form-error">Debe poseer al menos 8 caracteres, 1 mayúscula y 1 número.</span>
+                }
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">Repetir contraseña</label>
+              <div class="password-input-wrapper">
+                <input
+                  id="confirmPassword"
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  class="form-input"
+                  placeholder="Repite la contraseña"
+                  autocomplete="new-password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle-btn"
+                  (click)="toggleConfirmPasswordVisibility()"
+                  [attr.aria-label]="showConfirmPassword() ? 'Ocultar contraseña' : 'Ver contraseña'"
+                >
+                  {{ showConfirmPassword() ? '👁️' : '👁️‍🗨️' }}
+                </button>
+              </div>
+              @if (registerForm.get('confirmPassword')?.touched) {
+                @if (registerForm.get('confirmPassword')?.errors?.['required']) {
+                  <span class="form-error">Por favor, confirma tu contraseña.</span>
+                } @else if (registerForm.errors?.['passwordMismatch']) {
+                  <span class="form-error">Las contraseñas no coinciden.</span>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Fecha de nacimiento -->
+          <div class="form-group">
+            <label for="birthdate" class="form-label">Fecha de nacimiento</label>
+            <input
+              id="birthdate"
+              type="date"
+              formControlName="birthdate"
+              class="form-input"
+            />
+            @if (registerForm.get('birthdate')?.touched && registerForm.get('birthdate')?.errors?.['required']) {
+              <span class="form-error">La fecha de nacimiento es obligatoria.</span>
+            }
+          </div>
+
+          <!-- Descripción breve -->
+          <div class="form-group">
+            <label for="bio" class="form-label">Descripción breve</label>
+            <textarea
+              id="bio"
+              formControlName="bio"
+              class="form-textarea"
+              rows="3"
+              placeholder="Cuéntanos un poco sobre ti y qué temas te apasionan..."
+            ></textarea>
+          </div>
+
+          <!-- Selector de foto de perfil con borde punteado y previsualización -->
+          <div class="form-group">
+            <label class="form-label">Foto de perfil</label>
+            <div class="avatar-upload-zone">
+              @if (avatarPreview()) {
+                <div class="preview-container">
+                  <img [src]="avatarPreview()" alt="Previsualización de foto de perfil" class="preview-img" />
+                  <button type="button" class="btn-remove-avatar" (click)="removeAvatar()" title="Quitar imagen">
+                    ✕
+                  </button>
+                </div>
+              } @else {
+                <label for="avatar-input" class="upload-dropzone">
+                  <span class="upload-icon">📷</span>
+                  <span class="upload-text">Selecciona una imagen de perfil</span>
+                  <span class="upload-subtext">JPG, PNG o WebP (máximo 5 MB)</span>
+                </label>
+              }
+              <input
+                id="avatar-input"
+                type="file"
+                accept="image/png, image/jpeg, image/webp, image/gif"
+                (change)="onFileSelected($event)"
+                class="hidden-file-input"
+              />
+            </div>
+          </div>
+
+          <!-- Botón de envío -->
+          <button type="submit" class="btn-primary submit-btn" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <span>Creando cuenta...</span>
+            } @else {
+              <span>Crear cuenta</span>
+            }
+          </button>
+        </form>
+
+        <!-- Pie del formulario -->
+        <div class="card-footer">
+          <span>¿Ya tienes una cuenta? </span>
+          <a routerLink="/login" class="btn-link">Inicia sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="profile-page-container">
+  @if (authService.isLoggedIn()) {
+    @let user = authService.currentUser();
+    <div class="profile-card trama-card">
+      <!-- Encabezado del autor -->
+      <div class="profile-header">
+        <div class="profile-avatar-large">
+          @if (user?.avatarUrl) {
+            <img [src]="authService.getAvatarUrl(user?.avatarUrl)" [alt]="user?.username || 'Usuario'" />
+          } @else {
+            <span class="avatar-placeholder-text">{{ user?.firstName?.charAt(0) || 'U' }}</span>
+          }
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-meta-top">
+            <span class="author-tag">Perfil de autor</span>
+            <span class="badge" [class.badge-admin]="user?.role === 'administrador'" [class.badge-user]="user?.role !== 'administrador'">
+              {{ user?.role === 'administrador' ? 'Administrador' : 'Usuario' }}
+            </span>
+          </div>
+
+          <h1 class="profile-full-name">{{ user?.firstName }} {{ user?.lastName }}</h1>
+          <p class="profile-handle">&#64;{{ user?.username }}</p>
+
+          <p class="profile-bio">
+            {{ user?.bio || 'Sin descripción biográfica por el momento.' }}
+          </p>
+
+          <div class="profile-details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Correo electrónico</span>
+              <span class="detail-value">{{ user?.email }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Fecha de nacimiento</span>
+              <span class="detail-value">{{ user?.birthdate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de historias publicadas -->
+    <section class="published-stories-section">
+      <div class="stories-header">
+        <h2 class="stories-title">Historias publicadas</h2>
+        <span class="stories-count">0 historias</span>
+      </div>
+
+      <div class="empty-stories trama-card">
+        <p class="empty-stories-text">
+          Aún no has compartido historias. En el Sprint 2 podrás crear y gestionar tus publicaciones.
+        </p>
+        <a routerLink="/posts" class="btn-primary">Ver muro de publicaciones</a>
+      </div>
+    </section>
+  } @else {
+    <!-- Estado no autenticado con libre navegación -->
+    <div class="unauthenticated-card trama-card">
+      <div class="unauth-icon">🔒</div>
+      <h1 class="unauth-title">Inicia sesión para ver tu perfil</h1>
+      <p class="unauth-description">
+        Para consultar tus datos, historias y comentarios debes ingresar con tu cuenta o registrarte en la plataforma.
+      </p>
+      <div class="unauth-actions">
+        <a routerLink="/login" class="btn-primary">Iniciar sesión</a>
+        <a routerLink="/register" class="btn-secondary">Crear cuenta</a>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,135 @@
+<div class="posts-page-container">
+  <!-- Cabecera de la sección -->
+  <header class="posts-header">
+    <div class="posts-title-wrapper">
+      <h1 class="posts-headline">Stories worth staying with.</h1>
+      <p class="posts-subheadline">
+        Explora lecturas seleccionadas, reflexiones y vivencias de nuestra comunidad.
+      </p>
+    </div>
+
+    <!-- Barra de control y ordenamiento -->
+    <div class="posts-toolbar">
+      <div class="posts-counter">
+        <span class="counter-number">{{ posts().length }}</span>
+        <span class="counter-label">{{ posts().length === 1 ? 'publicación' : 'publicaciones' }}</span>
+      </div>
+
+      <div class="sort-controls">
+        <span class="sort-label">Ordenar por:</span>
+        <div class="sort-capsule">
+          <button
+            type="button"
+            class="sort-button"
+            [class.active]="sortOrder() === 'recent'"
+            (click)="setSortOrder('recent')"
+          >
+            Más recientes
+          </button>
+          <button
+            type="button"
+            class="sort-button"
+            [class.active]="sortOrder() === 'likes'"
+            (click)="setSortOrder('likes')"
+          >
+            Más me gusta
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tarjeta para redactar si está autenticado -->
+  @if (authService.isLoggedIn()) {
+    <section class="draft-card trama-card">
+      <div class="draft-header">
+        <div class="author-avatar-small">
+          @if (authService.currentUser()?.avatarUrl) {
+            <img
+              [src]="authService.getAvatarUrl(authService.currentUser()?.avatarUrl)"
+              [alt]="authService.currentUser()?.username || 'Usuario'"
+            />
+          } @else {
+            <span>{{ authService.currentUser()?.firstName?.charAt(0) || 'U' }}</span>
+          }
+        </div>
+        <span class="draft-prompt">Comparte algo nuevo hoy...</span>
+      </div>
+      <div class="draft-footer">
+        <span class="draft-hint">El módulo de publicación completa se habilitará en el Sprint 2.</span>
+        <button type="button" class="btn-primary btn-sm" disabled>Redactar publicación</button>
+      </div>
+    </section>
+  } @else {
+    <section class="welcome-banner trama-card">
+      <div class="banner-content">
+        <h2 class="banner-title">Únete a la conversación</h2>
+        <p class="banner-text">Inicia sesión o crea tu cuenta para publicar, reaccionar y guardar historias.</p>
+      </div>
+      <div class="banner-actions">
+        <a routerLink="/login" class="btn-secondary">Iniciar sesión</a>
+        <a routerLink="/register" class="btn-primary">Crear cuenta</a>
+      </div>
+    </section>
+  }
+
+  <!-- Listado de publicaciones -->
+  <main class="posts-feed">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando publicaciones...</p>
+      </div>
+    } @else if (posts().length === 0) {
+      <div class="empty-state trama-card">
+        <div class="empty-icon">📖</div>
+        <h2 class="empty-title">Aún no hay publicaciones</h2>
+        <p class="empty-description">
+          Sé el primero en compartir una historia cuando comience la próxima entrega.
+        </p>
+        @if (!authService.isLoggedIn()) {
+          <a routerLink="/register" class="btn-primary">Comenzar ahora</a>
+        }
+      </div>
+    } @else {
+      <div class="posts-list">
+        @for (post of posts(); track post._id) {
+          <article class="post-card trama-card">
+            <header class="post-header">
+              <div class="post-author-info">
+                <div class="author-avatar">
+                  @if (post.author?.avatarUrl) {
+                    <img [src]="authService.getAvatarUrl(post.author.avatarUrl)" [alt]="post.author.username" />
+                  } @else {
+                    <span>{{ post.author?.firstName?.charAt(0) || 'U' }}</span>
+                  }
+                </div>
+                <div class="author-details">
+                  <span class="author-name">{{ post.author?.firstName }} {{ post.author?.lastName }}</span>
+                  <span class="author-handle">&#64;{{ post.author?.username }}</span>
+                </div>
+              </div>
+            </header>
+
+            <div class="post-body">
+              <h2 class="post-title">{{ post.title }}</h2>
+              <p class="post-message">{{ post.message }}</p>
+              @if (post.imageUrl) {
+                <div class="post-image-wrapper">
+                  <img [src]="authService.getAvatarUrl(post.imageUrl)" [alt]="post.title" class="post-image" />
+                </div>
+              }
+            </div>
+
+            <footer class="post-actions">
+              <div class="post-action-btn">
+                <span class="action-icon">❤️</span>
+                <span class="action-label">{{ post.likes?.length || 0 }} Me gusta</span>
+              </div>
+            </footer>
+          </article>
+        }
+      </div>
+    }
+  </main>
+</div>

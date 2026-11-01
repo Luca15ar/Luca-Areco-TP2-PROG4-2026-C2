@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="tramaBg" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#2D1133" />
+      <stop offset="100%" stop-color="#120815" />
+    </radialGradient>
+    <linearGradient id="tramaAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDA4AF" />
+      <stop offset="60%" stop-color="#D81B60" />
+      <stop offset="100%" stop-color="#9D174D" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#tramaBg)" stroke="rgba(253, 164, 175, 0.2)" stroke-width="2" />
+  <!-- Monograma 't.' en tipografía editorial estilizada -->
+  <text x="22" y="44" font-family="'Playfair Display', Georgia, serif" font-size="38" font-weight="700" fill="url(#tramaAccent)">t</text>
+  <circle cx="44" cy="42" r="3.5" fill="#FDA4AF" />
+</svg>

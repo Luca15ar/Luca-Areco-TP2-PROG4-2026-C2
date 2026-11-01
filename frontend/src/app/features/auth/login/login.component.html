@@ -1,0 +1,83 @@
+<div class="auth-page-wrapper">
+  <div class="login-card trama-card">
+    <!-- Encabezado superior de la tarjeta -->
+    <div class="card-top-nav">
+      <span class="card-brand">trama.</span>
+      <a routerLink="/register" class="btn-link top-link">Crear una cuenta</a>
+    </div>
+
+    <!-- Icono central y encabezados -->
+    <div class="card-header">
+      <div class="brand-avatar-circle">
+        <span class="avatar-letter">t</span>
+      </div>
+      <p class="subtitle">Qué bueno verte</p>
+      <h1 class="title">Inicia sesión</h1>
+    </div>
+
+    <!-- Mensaje de error integrado -->
+    @if (errorMessage()) {
+      <div class="alert-banner-error" role="alert">
+        <span class="alert-icon">⚠️</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Formulario reactivo -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+      <div class="form-group">
+        <label for="identifier" class="form-label">Usuario o correo</label>
+        <input
+          id="identifier"
+          type="text"
+          formControlName="identifier"
+          class="form-input"
+          placeholder="ejemplo@correo.com o nombredeusuario"
+          autocomplete="username"
+        />
+        @if (loginForm.get('identifier')?.touched && loginForm.get('identifier')?.errors?.['required']) {
+          <span class="form-error">Por favor, ingresa tu usuario o correo electrónico.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="password-input-wrapper">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            class="form-input"
+            placeholder="Ingresa tu contraseña"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="password-toggle-btn"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Ver contraseña'"
+          >
+            {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']) {
+          <span class="form-error">Por favor, ingresa tu contraseña.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-primary submit-btn" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>Iniciando sesión...</span>
+        } @else {
+          <span>Iniciar sesión</span>
+        }
+      </button>
+    </form>
+
+    <!-- Pie de la tarjeta -->
+    <div class="card-footer">
+      <span>¿No tienes una cuenta? </span>
+      <a routerLink="/register" class="btn-link">Regístrate</a>
+    </div>
+  </div>
+</div>

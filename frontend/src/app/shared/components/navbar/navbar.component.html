@@ -1,0 +1,89 @@
+<header class="navbar-wrapper">
+  <div class="navbar-container">
+    <!-- Logotipo a la izquierda -->
+    <a routerLink="/posts" class="navbar-brand">
+      <span class="brand-text">trama.</span>
+    </a>
+
+    <!-- Enlaces y Controles a la derecha -->
+    <nav class="navbar-actions">
+      <div class="nav-links">
+        <a routerLink="/posts" routerLinkActive="active" class="nav-link">
+          Publicaciones
+        </a>
+
+        @if (authService.isAdmin()) {
+          <a routerLink="/admin" routerLinkActive="active" class="nav-link">
+            Administración
+          </a>
+        }
+      </div>
+
+      <!-- Conmutador de tema con cápsula deslizante -->
+      <button
+        type="button"
+        class="theme-toggle"
+        (click)="themeService.toggleTheme()"
+        [attr.aria-label]="themeService.currentTheme() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        [title]="themeService.currentTheme() === 'dark' ? 'Modo claro' : 'Modo oscuro'"
+      >
+        <div class="theme-capsule" [class.light]="themeService.currentTheme() === 'light'">
+          <span class="capsule-icon moon-icon">🌙</span>
+          <span class="capsule-icon sun-icon">☀️</span>
+          <div class="capsule-thumb"></div>
+        </div>
+      </button>
+
+      <!-- Avatar del usuario con menú flotante -->
+      @if (authService.isLoggedIn()) {
+        <div class="avatar-menu-wrapper">
+          <button
+            type="button"
+            class="avatar-button"
+            (click)="toggleMenu()"
+            aria-haspopup="true"
+            [attr.aria-expanded]="isMenuOpen()"
+          >
+            @if (authService.currentUser()?.avatarUrl) {
+              <img
+                [src]="authService.getAvatarUrl(authService.currentUser()?.avatarUrl)"
+                [alt]="authService.currentUser()?.username || 'Usuario'"
+                class="avatar-image"
+              />
+            } @else {
+              <div class="avatar-placeholder">
+                {{ authService.currentUser()?.firstName?.charAt(0) || 'U' }}
+              </div>
+            }
+          </button>
+
+          <!-- Menú desplegable del avatar (exactamente dos opciones con sentence case) -->
+          @if (isMenuOpen()) {
+            <div class="dropdown-menu">
+              <div class="dropdown-user-header">
+                <span class="dropdown-user-name">
+                  {{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}
+                </span>
+                <span class="dropdown-user-handle">&#64;{{ authService.currentUser()?.username }}</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item" (click)="goToProfile()">
+                <span class="dropdown-icon">👤</span>
+                <span>Mi perfil</span>
+              </button>
+              <button type="button" class="dropdown-item dropdown-item-danger" (click)="handleLogout()">
+                <span class="dropdown-icon">🚪</span>
+                <span>Cerrar sesión</span>
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Acceso directo cuando no está autenticado -->
+        <a routerLink="/login" class="nav-login-link">
+          Iniciar sesión
+        </a>
+      }
+    </nav>
+  </div>
+</header>
