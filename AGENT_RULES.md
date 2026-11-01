@@ -8,6 +8,7 @@
 * **Prohibición del estilo «Title Case» en español:** Queda terminantemente prohibido capitalizar cada palabra en títulos o botones.
   * *[Correcto]:* «Iniciar sesión», «Crear cuenta», «Mi perfil», «Cerrar sesión», «Historias que se quedan contigo».
   * *[Incorrecto]:* «Iniciar Sesión», «Crear Cuenta», «Mi Perfil», «Cerrar Sesión», «Historias Que Se Quedan Contigo».
+* **Prohibición estricta de emojis en el código y en la interfaz:** Queda terminantemente prohibido utilizar emojis en cualquier parte del proyecto, incluyendo plantillas HTML, componentes, estilos, textos visibles de la interfaz de usuario, botones, placeholders, mensajes de error o validación, registros de consola y comentarios en el código fuente. Toda iconografía debe implementarse exclusivamente mediante elementos SVG nativos, componentes de iconos limpios o texto tipográfico estándar.
 
 ## 2.2. Principios de ingeniería de software (DRY y SOLID)
 * **DRY (Don't repeat yourself):** Centralizar validaciones comunes, llamadas a la API, transformaciones de datos y componentes visuales repetitivos (modales, campos de formulario) en módulos compartidos (`shared` o `common`).

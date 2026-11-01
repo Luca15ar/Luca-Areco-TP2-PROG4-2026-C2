@@ -82,7 +82,11 @@
       </div>
     } @else if (posts().length === 0) {
       <div class="empty-state trama-card">
-        <div class="empty-icon">📖</div>
+        <div class="empty-icon-wrapper">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+            <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+          </svg>
+        </div>
         <h2 class="empty-title">Aún no hay publicaciones</h2>
         <p class="empty-description">
           Sé el primero en compartir una historia cuando comience la próxima entrega.
@@ -123,7 +127,9 @@
 
             <footer class="post-actions">
               <div class="post-action-btn">
-                <span class="action-icon">❤️</span>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
                 <span class="action-label">{{ post.likes?.length || 0 }} Me gusta</span>
               </div>
             </footer>
@@ -133,4 +139,3 @@
     }
   </main>
 </div>
-
