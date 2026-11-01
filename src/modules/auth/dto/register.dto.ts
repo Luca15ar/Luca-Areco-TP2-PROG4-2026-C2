@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterDto {
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
@@ -16,14 +23,16 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'El nombre de usuario es obligatorio' })
   @IsString({ message: 'El nombre de usuario debe ser una cadena de texto' })
   @Matches(/^[a-zA-Z0-9_.-]+$/, {
-    message: 'El nombre de usuario solo puede contener letras, números, puntos, guiones y guiones bajos',
+    message:
+      'El nombre de usuario solo puede contener letras, números, puntos, guiones y guiones bajos',
   })
   username: string;
 
   @IsNotEmpty({ message: 'La contraseña es obligatoria' })
   @MinLength(8, { message: 'La contraseña debe poseer al menos 8 caracteres' })
   @Matches(/(?=.*[A-Z])(?=.*\d)/, {
-    message: 'La contraseña debe contener al menos 1 letra mayúscula y 1 número',
+    message:
+      'La contraseña debe contener al menos 1 letra mayúscula y 1 número',
   })
   password: string;
 
@@ -35,4 +44,3 @@ export class RegisterDto {
   @IsString({ message: 'La descripción breve debe ser una cadena de texto' })
   bio?: string;
 }
-

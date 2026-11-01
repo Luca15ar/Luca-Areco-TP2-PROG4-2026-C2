@@ -5,7 +5,9 @@ import { Post, PostDocument } from './schemas/post.schema.js';
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private readonly postModel: Model<PostDocument>) {}
+  constructor(
+    @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
+  ) {}
 
   async findAll(): Promise<PostDocument[]> {
     return this.postModel
@@ -15,4 +17,3 @@ export class PostsService {
       .exec();
   }
 }
-

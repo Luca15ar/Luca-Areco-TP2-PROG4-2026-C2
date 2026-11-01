@@ -24,11 +24,12 @@ export const multerAvatarOptions = {
   fileFilter: (req: any, file: Express.Multer.File, callback: any) => {
     if (!file.mimetype.match(/\/(jpg|jpeg|png|webp|gif)$/i)) {
       return callback(
-        new BadRequestException('Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif)'),
+        new BadRequestException(
+          'Solo se permiten archivos de imagen (jpg, jpeg, png, webp, gif)',
+        ),
         false,
       );
     }
     callback(null, true);
   },
 };
-

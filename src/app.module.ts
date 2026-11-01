@@ -8,7 +8,9 @@ import { PostsModule } from './modules/posts/posts.module.js';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/TP2'),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/TP2',
+    ),
     UsersModule,
     AuthModule,
     PostsModule,

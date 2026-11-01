@@ -10,4 +10,3 @@ export class PostsController {
     return this.postsService.findAll();
   }
 }
-

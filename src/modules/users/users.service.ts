@@ -5,7 +5,9 @@ import { User, UserDocument } from './schemas/user.schema.js';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
   async create(userData: Partial<User>): Promise<UserDocument> {
     const createdUser = new this.userModel(userData);
@@ -17,7 +19,9 @@ export class UsersService {
   }
 
   async findByUsername(username: string): Promise<UserDocument | null> {
-    return this.userModel.findOne({ username: username.toLowerCase().trim() }).exec();
+    return this.userModel
+      .findOne({ username: username.toLowerCase().trim() })
+      .exec();
   }
 
   async findByIdentifier(identifier: string): Promise<UserDocument | null> {
@@ -37,4 +41,3 @@ export class UsersService {
     return this.userModel.find().select('-password').exec();
   }
 }
-

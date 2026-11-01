@@ -49,7 +49,9 @@ describe('AuthService', () => {
       }),
     };
 
-    vi.spyOn(mockUsersService, 'create').mockResolvedValue(mockSavedUser as any);
+    vi.spyOn(mockUsersService, 'create').mockResolvedValue(
+      mockSavedUser as any,
+    );
 
     const result = await authService.register({
       firstName: 'Luca',
@@ -67,7 +69,9 @@ describe('AuthService', () => {
   });
 
   it('debe fallar si el email ya existe', async () => {
-    vi.spyOn(mockUsersService, 'findByEmail').mockResolvedValue({ id: '1' } as any);
+    vi.spyOn(mockUsersService, 'findByEmail').mockResolvedValue({
+      id: '1',
+    } as any);
 
     await expect(
       authService.register({
@@ -98,7 +102,9 @@ describe('AuthService', () => {
       }),
     };
 
-    vi.spyOn(mockUsersService, 'findByIdentifier').mockResolvedValue(mockUser as any);
+    vi.spyOn(mockUsersService, 'findByIdentifier').mockResolvedValue(
+      mockUser as any,
+    );
 
     const result = await authService.login({
       identifier: 'lucaa',
@@ -120,7 +126,9 @@ describe('AuthService', () => {
       toObject: () => mockUser,
     };
 
-    vi.spyOn(mockUsersService, 'findByIdentifier').mockResolvedValue(mockUser as any);
+    vi.spyOn(mockUsersService, 'findByIdentifier').mockResolvedValue(
+      mockUser as any,
+    );
 
     await expect(
       authService.login({
@@ -130,4 +138,3 @@ describe('AuthService', () => {
     ).rejects.toThrow(UnauthorizedException);
   });
 });
-

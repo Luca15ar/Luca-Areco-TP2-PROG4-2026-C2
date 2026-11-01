@@ -10,4 +10,3 @@ import { AuthController } from './auth.controller.js';
   exports: [AuthService],
 })
 export class AuthModule {}
-

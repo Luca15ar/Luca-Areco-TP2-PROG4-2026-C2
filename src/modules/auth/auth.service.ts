@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -10,12 +14,16 @@ export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async register(registerDto: RegisterDto, file?: Express.Multer.File) {
-    const existingEmail = await this.usersService.findByEmail(registerDto.email);
+    const existingEmail = await this.usersService.findByEmail(
+      registerDto.email,
+    );
     if (existingEmail) {
       throw new BadRequestException('El correo electrónico ya está registrado');
     }
 
-    const existingUsername = await this.usersService.findByUsername(registerDto.username);
+    const existingUsername = await this.usersService.findByUsername(
+      registerDto.username,
+    );
     if (existingUsername) {
       throw new BadRequestException('El nombre de usuario ya está en uso');
     }
@@ -47,7 +55,9 @@ export class AuthService {
     }
 
     if (!user.isActive) {
-      throw new UnauthorizedException('La cuenta de usuario se encuentra deshabilitada');
+      throw new UnauthorizedException(
+        'La cuenta de usuario se encuentra deshabilitada',
+      );
     }
 
     const isMatch = await bcrypt.compare(loginDto.password, user.password);
@@ -65,4 +75,3 @@ export class AuthService {
     return userObj;
   }
 }
-

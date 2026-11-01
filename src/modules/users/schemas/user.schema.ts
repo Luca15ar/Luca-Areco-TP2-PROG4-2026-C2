@@ -31,7 +31,11 @@ export class User {
   @Prop({ default: '' })
   avatarUrl: string;
 
-  @Prop({ type: String, enum: ['usuario', 'administrador'], default: 'usuario' })
+  @Prop({
+    type: String,
+    enum: ['usuario', 'administrador'],
+    default: 'usuario',
+  })
   role: UserRole;
 
   @Prop({ default: true })
@@ -39,4 +43,3 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
