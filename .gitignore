@@ -60,3 +60,8 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Consignas y especificaciones locales
+spec.md
+PROGRAMACION IV - TP #2 - Completo - 2026 C1.md
+
