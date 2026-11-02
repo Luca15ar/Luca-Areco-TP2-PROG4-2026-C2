@@ -10,10 +10,16 @@ import {
 export class RegisterDto {
   @IsNotEmpty({ message: 'El nombre es obligatorio' })
   @IsString({ message: 'El nombre debe ser una cadena de texto' })
+  @Matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/, {
+    message: 'El nombre solo puede contener letras',
+  })
   firstName: string;
 
   @IsNotEmpty({ message: 'El apellido es obligatorio' })
   @IsString({ message: 'El apellido debe ser una cadena de texto' })
+  @Matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/, {
+    message: 'El apellido solo puede contener letras',
+  })
   lastName: string;
 
   @IsNotEmpty({ message: 'El correo electrónico es obligatorio' })

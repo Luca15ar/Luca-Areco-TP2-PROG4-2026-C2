@@ -1,107 +1,58 @@
-<header class="navbar-wrapper">
+<header class="navbar-header">
   <div class="navbar-container">
-    <!-- Logotipo a la izquierda -->
-    <a routerLink="/posts" class="navbar-brand">
-      <span class="brand-text">trama.</span>
-    </a>
+    <a routerLink="/posts" class="navbar-brand">trama<span>.</span></a>
 
-    <!-- Enlaces y Controles a la derecha -->
-    <nav class="navbar-actions">
-      <div class="nav-links">
-        <a routerLink="/posts" routerLinkActive="active" class="nav-link">
-          Publicaciones
-        </a>
-
+    <div class="navbar-actions">
+      <nav class="navbar-links">
+        <a routerLink="/posts" routerLinkActive="active">Publicaciones</a>
         @if (authService.isAdmin()) {
-          <a routerLink="/admin" routerLinkActive="active" class="nav-link">
-            Administración
-          </a>
+          <a routerLink="/admin" routerLinkActive="active">Administración</a>
         }
-      </div>
+      </nav>
 
-      <!-- Conmutador de tema con cápsula deslizante -->
+      <!-- Toggle de modo oscuro/claro con SVG vectoriales (sin emojis) -->
       <button
         type="button"
         class="theme-toggle"
-        (click)="themeService.toggleTheme()"
+        (click)="toggleTheme()"
         [attr.aria-label]="themeService.currentTheme() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
-        [title]="themeService.currentTheme() === 'dark' ? 'Modo claro' : 'Modo oscuro'"
       >
-        <div class="theme-capsule" [class.light]="themeService.currentTheme() === 'light'">
-          <span class="capsule-icon moon-icon">
-            <svg class="capsule-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
-              <path d="M12.3 2a10 10 0 0 0-.19 14 10 10 0 0 0 11.89-1.87A10 10 0 1 1 12.3 2z" />
-            </svg>
-          </span>
-          <span class="capsule-icon sun-icon">
-            <svg class="capsule-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
-              <circle cx="12" cy="12" r="4" />
-              <path
-                d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </span>
-          <div class="capsule-thumb"></div>
-        </div>
+        <span class="theme-toggle-icon" [class.active]="themeService.currentTheme() === 'light'">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </span>
+        <span class="theme-toggle-icon" [class.active]="themeService.currentTheme() === 'dark'">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </span>
       </button>
 
-      <!-- Avatar del usuario con menú flotante -->
-      @if (authService.isLoggedIn()) {
-        <div class="avatar-menu-wrapper">
-          <button
-            type="button"
-            class="avatar-button"
-            (click)="toggleMenu()"
-            aria-haspopup="true"
-            [attr.aria-expanded]="isMenuOpen()"
-          >
-            @if (authService.currentUser()?.avatarUrl) {
-              <img
-                [src]="authService.getAvatarUrl(authService.currentUser()?.avatarUrl)"
-                [alt]="authService.currentUser()?.username || 'Usuario'"
-                class="avatar-image"
-              />
-            } @else {
-              <div class="avatar-placeholder">
-                {{ authService.currentUser()?.firstName?.charAt(0) || 'U' }}
-              </div>
-            }
-          </button>
-
-          <!-- Menú desplegable del avatar (exactamente dos opciones con sentence case) -->
-          @if (isMenuOpen()) {
-            <div class="dropdown-menu">
-              <div class="dropdown-user-header">
-                <span class="dropdown-user-name">
-                  {{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}
-                </span>
-                <span class="dropdown-user-handle">&#64;{{ authService.currentUser()?.username }}</span>
-              </div>
-              <div class="dropdown-divider"></div>
-              <button type="button" class="dropdown-item" (click)="goToProfile()">
-                <svg class="dropdown-svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-                <span>Mi perfil</span>
-              </button>
-              <button type="button" class="dropdown-item dropdown-item-danger" (click)="handleLogout()">
-                <svg class="dropdown-svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-                  <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-                </svg>
-                <span>Cerrar sesión</span>
-              </button>
-            </div>
+      <div class="user-menu-wrapper">
+        <button type="button" class="user-avatar-btn" (click)="toggleMenu()" aria-label="Menú de usuario">
+          @if (authService.currentUser()?.avatarUrl) {
+            <img [src]="authService.getAvatarUrl(authService.currentUser()?.avatarUrl)" alt="Avatar" class="avatar-img" />
+          } @else {
+            <span class="avatar-text">{{ getUserInitials() }}</span>
           }
-        </div>
-      } @else {
-        <!-- Acceso directo cuando no está autenticado -->
-        <a routerLink="/login" class="nav-login-link">
-          Iniciar sesión
-        </a>
-      }
-    </nav>
+        </button>
+
+        @if (menuOpen()) {
+          <div class="user-dropdown">
+            <a routerLink="/profile" (click)="goToProfile()">Mi perfil</a>
+            <button type="button" (click)="handleLogout()">Cerrar sesión</button>
+          </div>
+        }
+      </div>
+    </div>
   </div>
 </header>

@@ -1,7 +1,7 @@
-import { Component, inject, signal, HostListener, ElementRef } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,19 +11,23 @@ import { ThemeService } from '../../../core/services/theme.service';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  readonly authService = inject(AuthService);
   readonly themeService = inject(ThemeService);
+  readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly elementRef = inject(ElementRef);
 
-  readonly isMenuOpen = signal<boolean>(false);
+  readonly menuOpen = signal<boolean>(false);
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
 
   toggleMenu(): void {
-    this.isMenuOpen.update((open) => !open);
+    this.menuOpen.update((open) => !open);
   }
 
   closeMenu(): void {
-    this.isMenuOpen.set(false);
+    this.menuOpen.set(false);
   }
 
   goToProfile(): void {
@@ -35,6 +39,14 @@ export class NavbarComponent {
     this.closeMenu();
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getUserInitials(): string {
+    const user = this.authService.currentUser();
+    if (!user) return 'TR';
+    const first = user.firstName ? user.firstName.charAt(0).toUpperCase() : '';
+    const last = user.lastName ? user.lastName.charAt(0).toUpperCase() : '';
+    return first + last || 'TR';
   }
 
   @HostListener('document:click', ['$event'])
