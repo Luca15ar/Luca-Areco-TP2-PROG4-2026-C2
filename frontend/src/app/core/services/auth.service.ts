@@ -3,12 +3,28 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
 
+declare const process: { env?: Record<string, string | undefined> } | undefined;
+
+function getBaseApiUrl(): string {
+  if (typeof process !== 'undefined' && process?.env?.['BACKEND_URL']) {
+    return process.env['BACKEND_URL'].replace(/\/$/, '');
+  }
+  if (
+    typeof window !== 'undefined' &&
+    window.location?.origin &&
+    !window.location.origin.includes(':4200')
+  ) {
+    return '';
+  }
+  return 'http://localhost:3000';
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = getBaseApiUrl();
   private readonly USER_KEY = 'trama_current_user';
 
   readonly currentUser = signal<User | null>(this.getStoredUser());
@@ -49,23 +65,24 @@ export class AuthService {
     if (!avatarPath) {
       return '';
     }
-    if (avatarPath.startsWith('http')) {
+    if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
       return avatarPath;
     }
     return `${this.API_URL}${avatarPath}`;
   }
 
   private getStoredUser(): User | null {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem(this.USER_KEY);
-      if (stored) {
-        try {
-          return JSON.parse(stored) as User;
-        } catch {
-          return null;
-        }
-      }
+    if (typeof localStorage === 'undefined') {
+      return null;
     }
-    return null;
+    const stored = localStorage.getItem(this.USER_KEY);
+    if (!stored) {
+      return null;
+    }
+    try {
+      return JSON.parse(stored) as User;
+    } catch {
+      return null;
+    }
   }
 }
