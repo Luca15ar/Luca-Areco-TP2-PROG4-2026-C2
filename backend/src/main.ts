@@ -9,6 +9,17 @@ import { AppModule } from './app.module.js';
 
 let cachedServer: ((req: Request, res: Response) => void) | null = null;
 
+function getUploadsDir(): string {
+  if (process.env.VERCEL) {
+    return join(tmpdir(), 'uploads');
+  }
+  const backendUploads = join(process.cwd(), 'backend', 'uploads');
+  if (existsSync(join(process.cwd(), 'backend'))) {
+    return backendUploads;
+  }
+  return join(process.cwd(), 'uploads');
+}
+
 export async function bootstrapServer(): Promise<(req: Request, res: Response) => void> {
   if (cachedServer) {
     return cachedServer;
@@ -27,10 +38,7 @@ export async function bootstrapServer(): Promise<(req: Request, res: Response) =
     }),
   );
 
-  const uploadsDir = process.env.VERCEL
-    ? join(tmpdir(), 'uploads')
-    : join(process.cwd(), 'uploads');
-
+  const uploadsDir = getUploadsDir();
   if (!existsSync(uploadsDir)) {
     mkdirSync(uploadsDir, { recursive: true });
   }
@@ -63,7 +71,7 @@ if (!process.env.VERCEL) {
     }),
   );
 
-  const uploadsDir = join(process.cwd(), 'uploads');
+  const uploadsDir = getUploadsDir();
   if (!existsSync(uploadsDir)) {
     mkdirSync(uploadsDir, { recursive: true });
   }

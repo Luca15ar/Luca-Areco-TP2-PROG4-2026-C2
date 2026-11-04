@@ -4,12 +4,21 @@ import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { tmpdir } from 'os';
 
+function getAvatarUploadPath(): string {
+  if (process.env.VERCEL) {
+    return join(tmpdir(), 'uploads', 'avatars');
+  }
+  const backendAvatars = join(process.cwd(), 'backend', 'uploads', 'avatars');
+  if (existsSync(join(process.cwd(), 'backend'))) {
+    return backendAvatars;
+  }
+  return join(process.cwd(), 'uploads', 'avatars');
+}
+
 export const multerAvatarOptions = {
   storage: diskStorage({
     destination: (req, file, callback) => {
-      const uploadPath = process.env.VERCEL
-        ? join(tmpdir(), 'uploads', 'avatars')
-        : './uploads/avatars';
+      const uploadPath = getAvatarUploadPath();
       if (!existsSync(uploadPath)) {
         mkdirSync(uploadPath, { recursive: true });
       }
