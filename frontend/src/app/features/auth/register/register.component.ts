@@ -150,6 +150,8 @@ export class RegisterComponent {
           this.errorMessage.set(serverMessage);
         } else if (Array.isArray(serverMessage)) {
           this.errorMessage.set(serverMessage.join(', '));
+        } else if (typeof err.error === 'string' && err.error.trim().length > 0) {
+          this.errorMessage.set(err.error);
         } else {
           this.errorMessage.set('Ocurrió un error al crear la cuenta. Por favor, intenta de nuevo.');
         }

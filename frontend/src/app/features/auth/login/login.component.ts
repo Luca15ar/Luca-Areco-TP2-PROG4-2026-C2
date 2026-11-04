@@ -60,6 +60,8 @@ export class LoginComponent {
             this.errorMessage.set(serverMessage);
           } else if (Array.isArray(serverMessage)) {
             this.errorMessage.set(serverMessage.join(', '));
+          } else if (typeof err.error === 'string' && err.error.trim().length > 0) {
+            this.errorMessage.set(err.error);
           } else {
             this.errorMessage.set(
               'No se pudo iniciar sesión. Verifica tus credenciales e intenta nuevamente.',
