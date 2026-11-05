@@ -4,7 +4,7 @@
     "backend": {
       "root": "backend",
       "framework": "nestjs",
-      "entrypoint": "src/main.mts"
+      "entrypoint": "src/main.ts"
     },
     "frontend": {
       "root": "frontend",

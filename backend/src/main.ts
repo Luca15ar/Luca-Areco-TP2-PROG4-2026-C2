@@ -70,9 +70,14 @@ export default async function handler(req: Request, res: Response) {
 }
 
 if (!process.env.VERCEL) {
-  const server = await bootstrapServer();
-  const port = process.env.PORT ?? 3000;
-  server.listen(port, () => {
-    console.log(`[NestJS] Servidor local escuchando en http://localhost:${port}`);
-  });
+  bootstrapServer()
+    .then((server) => {
+      const port = process.env.PORT ?? 3000;
+      server.listen(port, () => {
+        console.log(`[NestJS] Servidor local escuchando en http://localhost:${port}`);
+      });
+    })
+    .catch((err) => {
+      console.error('[NestJS] Error al iniciar el servidor local:', err);
+    });
 }
