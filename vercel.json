@@ -3,7 +3,8 @@
   "services": {
     "backend": {
       "root": ".",
-      "framework": "nestjs"
+      "framework": "nestjs",
+      "entrypoint": "src/main.ts"
     },
     "frontend": {
       "root": "frontend",
@@ -45,4 +46,3 @@
     }
   ]
 }
-
