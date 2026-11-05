@@ -2,7 +2,6 @@
   "name": "trama-monorepo",
   "version": "0.0.1",
   "private": true,
-  "type": "module",
   "scripts": {
     "start:backend": "npm --prefix backend run start:dev",
     "start:frontend": "npm --prefix frontend start",
