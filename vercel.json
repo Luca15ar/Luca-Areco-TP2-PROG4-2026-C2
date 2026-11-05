@@ -4,7 +4,12 @@
     "backend": {
       "root": "backend",
       "framework": "nestjs",
-      "entrypoint": "src/main.ts"
+      "entrypoint": "src/main.ts",
+      "functions": {
+        "src/main.ts": {
+          "includeFiles": "package.json"
+        }
+      }
     },
     "frontend": {
       "root": "frontend",
@@ -17,6 +22,14 @@
           "env": "BACKEND_URL"
         }
       ]
+    }
+  },
+  "functions": {
+    "src/main.ts": {
+      "includeFiles": "package.json"
+    },
+    "backend/src/main.ts": {
+      "includeFiles": "backend/package.json"
     }
   },
   "rewrites": [
