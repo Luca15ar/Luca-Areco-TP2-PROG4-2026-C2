@@ -53,8 +53,20 @@ export async function bootstrapServer(): Promise<Express> {
 }
 
 export default async function handler(req: Request, res: Response) {
-  const server = await bootstrapServer();
-  return server(req, res);
+  try {
+    const server = await bootstrapServer();
+    return server(req, res);
+  } catch (err: any) {
+    console.error('[Vercel Handler Error]:', err);
+    if (!res.headersSent) {
+      res.status(500).json({
+        statusCode: 500,
+        error: 'Error de inicialización del servidor',
+        message: err?.message || String(err),
+        mongoUriConfigured: Boolean(process.env.MONGODB_URI),
+      });
+    }
+  }
 }
 
 if (!process.env.VERCEL) {
