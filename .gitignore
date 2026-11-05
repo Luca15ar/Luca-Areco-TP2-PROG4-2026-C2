@@ -1,7 +1,7 @@
 # compiled output
-dist
-node_modules
-build
+/dist
+/node_modules
+/build
 
 # TypeScript build cache
 *.tsbuildinfo
@@ -46,10 +46,8 @@ lerna-debug.log*
 .env.local
 
 # Uploads
-uploads/*
-!uploads/.gitkeep
-backend/uploads/*
-!backend/uploads/.gitkeep
+/uploads/*
+!/uploads/.gitkeep
 
 .temp
 .tmp

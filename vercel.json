@@ -2,9 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
     "backend": {
-      "root": "backend",
-      "framework": "nestjs",
-      "entrypoint": "dist/main.js"
+      "root": ".",
+      "framework": "nestjs"
     },
     "frontend": {
       "root": "frontend",
@@ -46,3 +45,4 @@
     }
   ]
 }
+

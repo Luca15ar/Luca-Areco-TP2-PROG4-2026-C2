@@ -29,7 +29,7 @@ El ciclo de desarrollo del proyecto está estructurado en iteraciones regulares 
 
 A continuación se detallan los requisitos exigidos para el primer sprint de la plataforma, indicando el estado de cumplimiento de cada uno:
 
-* [x] **Configuración del monorepositorio y entornos de ejecución:** Estructuración limpia del servidor en NestJS (`/backend`) y del cliente en Angular (`/frontend`), con scripts de desarrollo unificado (`npm run start:all`).
+* [x] **Configuración del monorepositorio y entornos de ejecución:** Estructuración limpia del servidor en NestJS (raíz `/`) y del cliente en Angular (`/frontend`), con scripts de desarrollo unificado (`npm run start:all`).
 * [x] **Conexión y modelado de datos en MongoDB:** Configuración de la conexión mediante Mongoose y definición del esquema `User` con campos de identidad (`firstName`, `lastName`, `email`, `username`, `password`, `birthdate`, `bio`, `avatarUrl`, `role`, `isActive`).
 * [x] **Servicio de autenticación en backend (NestJS):**
   * Endpoint `POST /auth/register` con encriptación de contraseñas mediante `bcrypt`, validación estricta de DTOs (`RegisterDto`) y procesamiento de imágenes de perfil con Multer.
@@ -154,7 +154,6 @@ La jerarquía tipográfica equilibra tradición literaria con precisión técnic
 Desde la raíz del repositorio, instalar los paquetes del backend y del frontend:
 ```bash
 npm install
-npm --prefix backend install
 npm --prefix frontend install
 ```
 
@@ -167,7 +166,7 @@ npm run start:all
 ### 5.3. Ejecución en terminales separadas
 * **Terminal 1 - Servidor NestJS:**
   ```bash
-  npm run start:backend
+  npm run start:dev
   ```
   *Disponible en: `http://localhost:3000`*
 
@@ -181,8 +180,10 @@ npm run start:all
 * **Compilación completa:**
   ```bash
   npm run build
+  npm run build:frontend
   ```
 * **Ejecución de pruebas unitarias:**
   ```bash
   npm test
+  npm --prefix frontend test -- --watch=false
   ```
