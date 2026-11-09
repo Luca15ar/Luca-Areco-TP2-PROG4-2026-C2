@@ -59,6 +59,11 @@ textarea {
   font-family: inherit;
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 a {
   color: inherit;
   text-decoration: none;

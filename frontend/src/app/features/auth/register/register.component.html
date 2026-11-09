@@ -123,8 +123,32 @@
           </label>
           <label>
             Repetir contraseña
-            <input type="password" formControlName="repeatPassword" placeholder="Repite tu contraseña" />
-            @if ((registerForm.get('repeatPassword')?.touched || registerForm.touched) && (registerForm.get('repeatPassword')?.errors || registerForm.hasError('passwordMismatch'))) {
+            <div class="password-wrapper">
+              <input
+                [type]="showRepeatPassword() ? 'text' : 'password'"
+                formControlName="repeatPassword"
+                placeholder="Repite tu contraseña"
+              />
+              <button
+                type="button"
+                class="btn-reveal"
+                (click)="showRepeatPassword.set(!showRepeatPassword())"
+                aria-label="Mostrar u ocultar repetición de contraseña"
+              >
+                @if (showRepeatPassword()) {
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                }
+              </button>
+            </div>
+            @if (registerForm.get('repeatPassword')?.touched && (registerForm.get('repeatPassword')?.errors || registerForm.hasError('passwordMismatch'))) {
               <small class="field-error">
                 @if (registerForm.get('repeatPassword')?.hasError('required')) {
                   Debes repetir la contraseña.
@@ -136,40 +160,45 @@
           </label>
         </div>
 
-        <label>
-          Fecha de nacimiento
-          <input type="date" formControlName="birthdate" />
-          @if (registerForm.get('birthdate')?.touched && registerForm.get('birthdate')?.errors) {
-            <small class="field-error">
-              @if (registerForm.get('birthdate')?.hasError('required')) {
-                La fecha de nacimiento es obligatoria.
-              }
-            </small>
-          }
-        </label>
+        <div class="form-row">
+          <label>
+            Fecha de nacimiento
+            <input type="date" formControlName="birthdate" />
+            @if (registerForm.get('birthdate')?.touched && registerForm.get('birthdate')?.errors) {
+              <small class="field-error">
+                @if (registerForm.get('birthdate')?.hasError('required')) {
+                  La fecha de nacimiento es obligatoria.
+                }
+              </small>
+            }
+          </label>
+
+          <label>
+            Foto de perfil
+            <div class="upload-box">
+              <div class="upload-icon-wrapper">
+                @if (imagePreview()) {
+                  <img [src]="imagePreview()" class="avatar-preview" alt="Vista previa" />
+                } @else {
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                }
+              </div>
+              <div class="upload-text">
+                <span class="upload-title">Seleccionar imagen</span>
+                <span class="upload-sub">Arrastra o haz clic aquí</span>
+              </div>
+              <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+            </div>
+          </label>
+        </div>
 
         <label>
           Descripción breve
-          <textarea formControlName="bio" rows="3" placeholder="Cuéntanos algo sobre ti..."></textarea>
-        </label>
-
-        <label class="upload-box">
-          <div class="upload-icon-wrapper">
-            @if (imagePreview()) {
-              <img [src]="imagePreview()" class="avatar-preview" alt="Vista previa" />
-            } @else {
-              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                <polyline points="21 15 16 10 5 21"></polyline>
-              </svg>
-            }
-          </div>
-          <div>
-            <strong>Foto de perfil</strong>
-            <small>Arrastra una imagen o haz clic para elegirla</small>
-          </div>
-          <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          <textarea formControlName="bio" rows="2" placeholder="Cuéntanos algo sobre ti..."></textarea>
         </label>
 
         <button type="submit" class="btn-primary" [disabled]="isLoading()">

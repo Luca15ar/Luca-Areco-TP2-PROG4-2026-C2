@@ -34,6 +34,7 @@ export class RegisterComponent {
   private readonly authService = inject(AuthService);
 
   readonly showPassword = signal<boolean>(false);
+  readonly showRepeatPassword = signal<boolean>(false);
   readonly imagePreview = signal<string | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
