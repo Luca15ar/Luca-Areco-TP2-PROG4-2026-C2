@@ -1,0 +1,101 @@
+<article class="post-article">
+  <!-- Cabecera de artículo -->
+  <header class="article-header">
+    <div class="author-block">
+      <div class="author-avatar-wrapper">
+        @if (post().author.avatarUrl) {
+          <img [src]="post().author.avatarUrl" [alt]="authorFullName()" class="author-avatar" />
+        } @else {
+          <span class="author-avatar-fallback">{{ authorInitial() }}</span>
+        }
+      </div>
+
+      <div class="author-details">
+        <span class="author-name">{{ authorFullName() }}</span>
+        <time [dateTime]="post().createdAt" class="article-date">{{ formattedDate() }}</time>
+      </div>
+    </div>
+
+    <!-- Menú contextual de tres puntos horizontales -->
+    <div class="header-actions">
+      @if (canDelete()) {
+        <div class="context-menu-wrapper">
+          <button
+            type="button"
+            class="btn-more-options"
+            (click)="toggleMenu()"
+            aria-label="Más opciones"
+            title="Más opciones"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <circle cx="5" cy="12" r="1.75"></circle>
+              <circle cx="12" cy="12" r="1.75"></circle>
+              <circle cx="19" cy="12" r="1.75"></circle>
+            </svg>
+          </button>
+
+          @if (menuOpen()) {
+            <div class="context-dropdown">
+              <button type="button" class="dropdown-item-danger" (click)="onDelete()">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span>Eliminar publicación</span>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </header>
+
+  <!-- Título inmediatamente debajo de la cabecera -->
+  <h2 class="article-title">{{ post().title }}</h2>
+
+  <!-- Extracto / Mensaje -->
+  <p class="article-excerpt">{{ post().content || post().message }}</p>
+
+  <!-- Imagen destacada a ancho completo -->
+  @if (post().imageUrl) {
+    <div class="article-media">
+      <img [src]="post().imageUrl" [alt]="post().title" class="article-image" loading="lazy" />
+    </div>
+  }
+
+  <!-- Barra de acciones: me gusta a la izquierda, leer historia a la derecha -->
+  <footer class="article-footer">
+    <button
+      type="button"
+      class="btn-like"
+      [class.liked]="isLiked()"
+      (click)="onLike()"
+      [attr.aria-label]="isLiked() ? 'Quitar me gusta' : 'Dar me gusta'"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        stroke="currentColor"
+        stroke-width="2"
+        [attr.fill]="isLiked() ? 'currentColor' : 'none'"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span class="likes-count">{{ post().likes.length }}</span>
+    </button>
+
+    <span class="read-story-link">
+      <span>Leer historia</span>
+      <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="7" y1="17" x2="17" y2="7"></line>
+        <polyline points="7 7 17 7 17 17"></polyline>
+      </svg>
+    </span>
+  </footer>
+
+  <!-- Separador inferior -->
+  <div class="article-separator"></div>
+</article>

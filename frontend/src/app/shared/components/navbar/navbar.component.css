@@ -56,32 +56,6 @@
   color: var(--color-accent);
 }
 
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px;
-  border-radius: 9999px;
-  border: 1px solid var(--border-surface);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.theme-toggle-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  color: var(--text-muted);
-  transition: all 0.2s;
-}
-
-.theme-toggle-icon.active {
-  background: var(--color-accent);
-  color: #120815;
-}
-
 .user-menu-wrapper {
   position: relative;
 }

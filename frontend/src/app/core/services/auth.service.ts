@@ -47,6 +47,14 @@ export class AuthService {
     );
   }
 
+  updateProfile(userId: string, formData: FormData): Observable<User> {
+    return this.http.patch<User>(`${this.API_URL}/users/${userId}`, formData).pipe(
+      tap((user) => {
+        this.setCurrentUser(user);
+      }),
+    );
+  }
+
   setCurrentUser(user: User): void {
     this.currentUser.set(user);
     if (typeof localStorage !== 'undefined') {

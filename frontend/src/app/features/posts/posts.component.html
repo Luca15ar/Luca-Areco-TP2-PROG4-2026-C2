@@ -1,0 +1,249 @@
+<div class="posts-page">
+  <div class="posts-container">
+    <!-- Encabezado editorial limpio (título a la izquierda, frase a la derecha en la misma fila) -->
+    <header class="feed-header">
+      <div class="feed-header-left">
+        <span class="journal-kicker">El diario</span>
+        <h1 class="page-title">Historias que se quedan contigo.</h1>
+      </div>
+      <div class="feed-header-right">
+        <p class="feed-editorial-quote">Una colección de pequeñas verdades bellamente contadas.</p>
+      </div>
+    </header>
+
+    <!-- Fila limpia de filtros sin tarjeta contenedora: contador a la izquierda y cápsula a la derecha -->
+    <div class="feed-toolbar">
+      <span class="total-indicator">
+        @if (total() === 1) {
+          1 historia
+        } @else {
+          {{ total() }} historias
+        }
+      </span>
+
+      <div class="sort-selector" role="group" aria-label="Ordenar publicaciones">
+        <button
+          type="button"
+          class="btn-sort"
+          [class.active]="currentSort() === 'date'"
+          (click)="setSort('date')"
+        >
+          Más recientes
+        </button>
+        <button
+          type="button"
+          class="btn-sort"
+          [class.active]="currentSort() === 'likes'"
+          (click)="setSort('likes')"
+        >
+          Más me gusta
+        </button>
+      </div>
+    </div>
+
+    <!-- Feed de publicaciones -->
+    @if (isLoading()) {
+      <div class="feed-state-box loading-state">
+        <div class="spinner"></div>
+        <p>Cargando historias...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="feed-state-box error-state">
+        <p>{{ errorMessage() }}</p>
+        <button type="button" class="btn-retry" (click)="loadPosts()">Reintentar</button>
+      </div>
+    } @else if (posts().length === 0) {
+      <div class="feed-state-box empty-state">
+        <div class="empty-icon-wrapper">
+          <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <h2>No hay historias publicadas todavía</h2>
+        <p>Sé la primera persona en compartir una pequeña verdad de cada día.</p>
+        <button type="button" class="btn-primary-inline" (click)="openCreateModal()">
+          Publicar la primera historia
+        </button>
+      </div>
+    } @else {
+      <div class="posts-feed">
+        @for (post of posts(); track post._id) {
+          <app-post-card
+            [post]="post"
+            [currentUserId]="currentUserId()"
+            [isAdmin]="isAdmin()"
+            (likeToggle)="handleLike(post)"
+            (deleteRequest)="openDeleteModal(post)"
+          />
+        }
+      </div>
+
+      <!-- Paginación -->
+      @if (totalPages() > 1) {
+        <nav class="pagination-nav" aria-label="Paginación de historias">
+          <button
+            type="button"
+            class="btn-page"
+            [disabled]="page() === 1"
+            (click)="prevPage()"
+          >
+            Anterior
+          </button>
+          <span class="page-indicator">Página {{ page() }} de {{ totalPages() }}</span>
+          <button
+            type="button"
+            class="btn-page"
+            [disabled]="page() >= totalPages()"
+            (click)="nextPage()"
+          >
+            Siguiente
+          </button>
+        </nav>
+      }
+    }
+  </div>
+
+  <!-- Botón flotante para escribir historia (editorial y discreto, fuera del medio de la cabecera) -->
+  <button
+    type="button"
+    class="fab-create-post"
+    (click)="openCreateModal()"
+    aria-label="Escribir historia"
+    title="Escribir historia"
+  >
+    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"></path>
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+    </svg>
+    <span>Escribir historia</span>
+  </button>
+
+  <!-- Modal de nueva publicación -->
+  @if (isCreateModalOpen()) {
+    <div class="modal-backdrop" (click)="closeCreateModal()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="create-title">
+        <header class="modal-header">
+          <h2 id="create-title" class="modal-title">Escribir una historia</h2>
+          <button type="button" class="btn-close-modal" (click)="closeCreateModal()" aria-label="Cerrar modal">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </header>
+
+        <form [formGroup]="createForm" (ngSubmit)="onSubmitCreate()" class="modal-form">
+          @if (modalErrorMessage()) {
+            <div class="modal-error-banner" role="alert">
+              {{ modalErrorMessage() }}
+            </div>
+          }
+
+          <label>
+            Título de la publicación
+            <input
+              type="text"
+              formControlName="title"
+              placeholder="Escribe un título sugerente..."
+              maxlength="100"
+            />
+            @if (createForm.get('title')?.touched && createForm.get('title')?.errors) {
+              <small class="field-error">
+                @if (createForm.get('title')?.hasError('required')) {
+                  El título es obligatorio.
+                } @else if (createForm.get('title')?.hasError('minlength')) {
+                  El título debe tener al menos 3 caracteres.
+                }
+              </small>
+            }
+          </label>
+
+          <label>
+            Mensaje o contenido
+            <textarea
+              formControlName="message"
+              rows="5"
+              placeholder="Comparte lo que piensas o sientes hoy..."
+              maxlength="2000"
+            ></textarea>
+            @if (createForm.get('message')?.touched && createForm.get('message')?.errors) {
+              <small class="field-error">
+                @if (createForm.get('message')?.hasError('required')) {
+                  El mensaje es obligatorio.
+                } @else if (createForm.get('message')?.hasError('minlength')) {
+                  El mensaje debe tener al menos 5 caracteres.
+                }
+              </small>
+            }
+          </label>
+
+          <div class="form-upload-field">
+            <span class="upload-label">Imagen adjunta (opcional)</span>
+
+            @if (imagePreview()) {
+              <div class="modal-image-preview">
+                <img [src]="imagePreview()" alt="Vista previa de publicación" class="preview-img" />
+                <button type="button" class="btn-remove-preview" (click)="removeSelectedImage()">
+                  Quitar imagen
+                </button>
+              </div>
+            } @else {
+              <label class="modal-upload-box">
+                <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Haz clic aquí para seleccionar una imagen</span>
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+              </label>
+            }
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeCreateModal()" [disabled]="isSubmitting()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary-submit" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <span>Publicando...</span>
+              } @else {
+                <span>Publicar historia</span>
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Modal personalizado de confirmación de eliminación -->
+  @if (postToDelete()) {
+    <div class="modal-backdrop" (click)="closeDeleteModal()">
+      <div class="modal-dialog modal-dialog-sm" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="delete-title">
+        <header class="modal-header">
+          <h2 id="delete-title" class="modal-title">Eliminar publicación</h2>
+        </header>
+
+        <div class="modal-body">
+          <p>¿Estás seguro de que deseas eliminar «<strong>{{ postToDelete()?.title }}</strong>»?</p>
+          <p class="modal-subtext">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeDeleteModal()" [disabled]="isDeleting()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-danger-submit" (click)="confirmDelete()" [disabled]="isDeleting()">
+            @if (isDeleting()) {
+              <span>Eliminando...</span>
+            } @else {
+              <span>Eliminar</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

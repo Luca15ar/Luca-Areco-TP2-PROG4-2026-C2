@@ -37,6 +37,15 @@ export class UsersService {
     return this.userModel.findById(id).exec();
   }
 
+  async update(
+    id: string,
+    updateData: Partial<User>,
+  ): Promise<UserDocument | null> {
+    return this.userModel
+      .findByIdAndUpdate(id, { $set: updateData }, { new: true })
+      .exec();
+  }
+
   async findAll(): Promise<UserDocument[]> {
     return this.userModel.find().select('-password').exec();
   }

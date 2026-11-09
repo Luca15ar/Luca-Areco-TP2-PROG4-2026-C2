@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AuthService } from './auth.service.js';
 import { UsersService } from '../users/users.service.js';
+import { CloudinaryService } from '../cloudinary/cloudinary.service.js';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 
 describe('AuthService', () => {
   let authService: AuthService;
   let mockUsersService: Partial<UsersService>;
+  let mockCloudinaryService: Partial<CloudinaryService>;
 
   beforeEach(() => {
     mockUsersService = {
@@ -15,7 +17,13 @@ describe('AuthService', () => {
       findByIdentifier: vi.fn(),
       create: vi.fn(),
     };
-    authService = new AuthService(mockUsersService as UsersService);
+    mockCloudinaryService = {
+      uploadFile: vi.fn().mockResolvedValue('https://res.cloudinary.com/demo/image/upload/sample.jpg'),
+    };
+    authService = new AuthService(
+      mockUsersService as UsersService,
+      mockCloudinaryService as CloudinaryService,
+    );
   });
 
   it('debe registrar un usuario exitosamente con contraseña encriptada', async () => {

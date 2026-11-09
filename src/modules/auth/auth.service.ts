@@ -6,13 +6,17 @@ import {
 } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { UsersService } from '../users/users.service.js';
+import { CloudinaryService } from '../cloudinary/cloudinary.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { UserDocument } from '../users/schemas/user.schema.js';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   async register(registerDto: RegisterDto, file?: Express.Multer.File) {
     try {
@@ -32,7 +36,10 @@ export class AuthService {
 
       const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
-      const avatarUrl = file ? `/uploads/avatars/${file.filename}` : '';
+      let avatarUrl = '';
+      if (file) {
+        avatarUrl = await this.cloudinaryService.uploadFile(file, 'avatars');
+      }
 
       const newUser = await this.usersService.create({
         firstName: registerDto.firstName,

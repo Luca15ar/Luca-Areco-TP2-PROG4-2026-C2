@@ -1,26 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
-import { diskStorage } from 'multer';
-import { extname, join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
-import { tmpdir } from 'os';
+import { memoryStorage } from 'multer';
 
-export const multerAvatarOptions = {
-  storage: diskStorage({
-    destination: (req, file, callback) => {
-      const uploadPath = process.env.VERCEL
-        ? join(tmpdir(), 'uploads', 'avatars')
-        : './uploads/avatars';
-      if (!existsSync(uploadPath)) {
-        mkdirSync(uploadPath, { recursive: true });
-      }
-      callback(null, uploadPath);
-    },
-    filename: (req, file, callback) => {
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      const ext = extname(file.originalname);
-      callback(null, `avatar-${uniqueSuffix}${ext}`);
-    },
-  }),
+export const multerImageOptions = {
+  storage: memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
   },
@@ -36,3 +18,5 @@ export const multerAvatarOptions = {
     callback(null, true);
   },
 };
+
+export const multerAvatarOptions = multerImageOptions;

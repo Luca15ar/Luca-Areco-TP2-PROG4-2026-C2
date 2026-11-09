@@ -27,6 +27,36 @@
       }
     },
     {
+      "source": "/auth",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/users/(.*)",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/users",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/posts/(.*)",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/posts",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
       "source": "/uploads/(.*)",
       "destination": {
         "service": "backend"

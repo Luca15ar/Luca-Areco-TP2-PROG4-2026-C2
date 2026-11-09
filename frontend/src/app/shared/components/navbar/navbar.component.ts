@@ -1,6 +1,5 @@
 import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { ThemeService } from '../../../core/services/theme.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -11,16 +10,11 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  readonly themeService = inject(ThemeService);
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly elementRef = inject(ElementRef);
 
   readonly menuOpen = signal<boolean>(false);
-
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
-  }
 
   toggleMenu(): void {
     this.menuOpen.update((open) => !open);
@@ -30,9 +24,10 @@ export class NavbarComponent {
     this.menuOpen.set(false);
   }
 
-  goToProfile(): void {
-    this.closeMenu();
-    this.router.navigate(['/profile']);
+  scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
   }
 
   handleLogout(): void {
