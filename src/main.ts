@@ -19,6 +19,7 @@ export async function bootstrapServer(): Promise<(req: Request, res: Response) =
   const app = await NestFactory.create<NestExpressApplication>(AppModule, adapter);
 
   app.enableCors();
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -55,6 +56,7 @@ if (!process.env.VERCEL) {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, adapter);
 
   app.enableCors();
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

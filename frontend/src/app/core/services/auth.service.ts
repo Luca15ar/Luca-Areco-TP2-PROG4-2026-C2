@@ -32,7 +32,7 @@ export class AuthService {
   readonly isAdmin = computed(() => this.currentUser()?.role === 'administrador');
 
   register(formData: FormData): Observable<User> {
-    return this.http.post<User>(`${this.API_URL}/auth/register`, formData).pipe(
+    return this.http.post<User>(`${this.API_URL}/api/auth/register`, formData).pipe(
       tap((user) => {
         this.setCurrentUser(user);
       }),
@@ -40,7 +40,7 @@ export class AuthService {
   }
 
   login(credentials: { identifier: string; password: string }): Observable<User> {
-    return this.http.post<User>(`${this.API_URL}/auth/login`, credentials).pipe(
+    return this.http.post<User>(`${this.API_URL}/api/auth/login`, credentials).pipe(
       tap((user) => {
         this.setCurrentUser(user);
       }),
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   updateProfile(userId: string, formData: FormData): Observable<User> {
-    return this.http.patch<User>(`${this.API_URL}/users/${userId}`, formData).pipe(
+    return this.http.patch<User>(`${this.API_URL}/api/users/${userId}`, formData).pipe(
       tap((user) => {
         this.setCurrentUser(user);
       }),

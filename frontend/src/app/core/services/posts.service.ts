@@ -49,24 +49,24 @@ export class PostsService {
     if (params.authorId) {
       httpParams = httpParams.set('authorId', params.authorId);
     }
-    return this.http.get<PostsResponse>(`${this.API_URL}/posts`, { params: httpParams });
+    return this.http.get<PostsResponse>(`${this.API_URL}/api/posts`, { params: httpParams });
   }
 
   getUserPosts(authorId: string): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.API_URL}/posts/user/${authorId}`);
+    return this.http.get<Post[]>(`${this.API_URL}/api/posts/user/${authorId}`);
   }
 
   getPostById(id: string): Observable<Post> {
-    return this.http.get<Post>(`${this.API_URL}/posts/${id}`);
+    return this.http.get<Post>(`${this.API_URL}/api/posts/${id}`);
   }
 
   createPost(formData: FormData): Observable<Post> {
-    return this.http.post<Post>(`${this.API_URL}/posts`, formData);
+    return this.http.post<Post>(`${this.API_URL}/api/posts`, formData);
   }
 
   deletePost(id: string, userId: string): Observable<{ message: string; id: string }> {
     return this.http.delete<{ message: string; id: string }>(
-      `${this.API_URL}/posts/${id}?userId=${encodeURIComponent(userId)}`,
+      `${this.API_URL}/api/posts/${id}?userId=${encodeURIComponent(userId)}`,
     );
   }
 
@@ -75,7 +75,7 @@ export class PostsService {
     userId: string,
   ): Observable<{ message: string; likesCount: number; isLiked: boolean }> {
     return this.http.post<{ message: string; likesCount: number; isLiked: boolean }>(
-      `${this.API_URL}/posts/${id}/like`,
+      `${this.API_URL}/api/posts/${id}/like`,
       { userId },
     );
   }
@@ -85,7 +85,7 @@ export class PostsService {
     userId: string,
   ): Observable<{ message: string; likesCount: number; isLiked: boolean }> {
     return this.http.delete<{ message: string; likesCount: number; isLiked: boolean }>(
-      `${this.API_URL}/posts/${id}/like?userId=${encodeURIComponent(userId)}`,
+      `${this.API_URL}/api/posts/${id}/like?userId=${encodeURIComponent(userId)}`,
       { body: { userId } },
     );
   }

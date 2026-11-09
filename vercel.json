@@ -21,49 +21,13 @@
   },
   "rewrites": [
     {
-      "source": "/auth/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/auth",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/users/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/users",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/posts/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/posts",
+      "source": "/api/(.*)",
       "destination": {
         "service": "backend"
       }
     },
     {
       "source": "/uploads/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/api/(.*)",
       "destination": {
         "service": "backend"
       }
