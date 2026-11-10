@@ -2,6 +2,7 @@
   --bg-app: #120815;
   --fg-app: #ffffff;
   --bg-surface: rgba(38, 16, 43, 0.7);
+  --bg-surface-solid: #220d26;
   --border-surface: rgba(251, 113, 133, 0.2);
   --bg-input: rgba(18, 8, 21, 0.5);
   --border-input: rgba(251, 113, 133, 0.24);
@@ -22,6 +23,7 @@
   --bg-app: #fff8f8;
   --fg-app: #2a1b2d;
   --bg-surface: #ffffff;
+  --bg-surface-solid: #ffffff;
   --border-surface: #f3e2e6;
   --bg-input: #fff1f2;
   --border-input: #f3e2e6;

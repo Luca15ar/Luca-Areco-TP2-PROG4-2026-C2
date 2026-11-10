@@ -74,6 +74,39 @@
   }
 }
 
+@media (max-width: 768px) {
+  .posts-container {
+    padding: 2rem 1.25rem 5.5rem;
+    gap: 1.5rem;
+  }
+
+  .feed-header {
+    padding-bottom: 0;
+    border-bottom: none;
+    gap: 0.5rem;
+  }
+
+  .feed-header-right {
+    display: none;
+  }
+
+  .feed-header-left {
+    max-width: 100%;
+    gap: 0.4rem;
+  }
+
+  .page-title {
+    font-size: clamp(2.3rem, 9vw, 2.85rem);
+    line-height: 1.05;
+  }
+
+  .feed-toolbar {
+    padding-top: 0.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-surface);
+  }
+}
+
 /* Fila limpia de ordenamiento sin fondo ni tarjeta */
 .feed-toolbar {
   display: flex;
@@ -257,32 +290,114 @@
   color: var(--text-placeholder);
 }
 
-/* Botón flotante para escribir historia */
+/* Botón flotante para escribir historia (escritorio: pluma + texto) */
 .fab-create-post {
   position: fixed;
-  bottom: 2rem;
+  bottom: 2.25rem;
   right: 2.25rem;
-  z-index: 40;
+  z-index: 60;
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  justify-content: center;
+  gap: 0.6rem;
   background: var(--color-primary);
   color: #fff;
-  padding: 0.8rem 1.35rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 9999px;
-  border: 1px solid rgba(251, 113, 133, 0.35);
+  border: 1px solid rgba(251, 113, 133, 0.4);
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  box-shadow: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fab-create-post .fab-pen-icon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  display: block;
+}
+
+.fab-create-post .fab-plus-icon {
+  display: none;
 }
 
 .fab-create-post:hover {
   background: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: none;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+.fab-create-post:active {
+  transform: translateY(0);
+}
+
+.fab-create-post .fab-label {
+  display: inline;
+}
+
+/* En vista mobile: botón circular flotante solo con el icono de la pluma y +, por encima de la barra inferior */
+@media (max-width: 768px) {
+  .fab-create-post {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 16px);
+    right: 1.25rem;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    padding: 0;
+    gap: 0;
+    border-radius: 50%;
+    z-index: 60;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fab-create-post:hover {
+    transform: scale(1.06);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75);
+  }
+
+  .fab-create-post:active {
+    transform: scale(0.96);
+  }
+
+  .fab-create-post .fab-plus-icon {
+    display: block;
+    width: 13px;
+    height: 13px;
+    min-width: 13px;
+    min-height: 13px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    transform: translateY(-5px);
+    margin-right: -6px;
+    z-index: 2;
+  }
+
+  .fab-create-post .fab-pen-icon {
+    width: 21px;
+    height: 21px;
+    min-width: 21px;
+    min-height: 21px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    display: block;
+  }
+
+  .fab-create-post .fab-label {
+    display: none !important;
+  }
 }
 
 /* Modal de redacción */

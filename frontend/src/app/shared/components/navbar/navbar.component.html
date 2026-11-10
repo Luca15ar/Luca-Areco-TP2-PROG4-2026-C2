@@ -29,3 +29,34 @@
     </div>
   </div>
 </header>
+
+<!-- Barra de navegación inferior fija para formato móvil -->
+<nav class="bottom-nav" aria-label="Navegación principal móvil">
+  <a routerLink="/posts" routerLinkActive="active" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+    </svg>
+    <span class="bottom-nav-label">Publicaciones</span>
+  </a>
+
+  <a routerLink="/profile" routerLinkActive="active" (click)="scrollToTop()" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
+    </svg>
+    <span class="bottom-nav-label">Mi perfil</span>
+  </a>
+
+  @if (authService.isAdmin()) {
+    <a routerLink="/admin" routerLinkActive="active" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      <span class="bottom-nav-label">Administración</span>
+    </a>
+  }
+</nav>

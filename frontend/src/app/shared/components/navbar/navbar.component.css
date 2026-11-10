@@ -90,7 +90,7 @@
   right: 0;
   top: calc(100% + 8px);
   width: 160px;
-  background: #1d0b20;
+  background: var(--bg-surface-solid, #1d0b20);
   border: 1px solid var(--border-surface);
   border-radius: var(--radius-sm);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
@@ -114,4 +114,88 @@
 .user-dropdown button:hover {
   background: rgba(251, 113, 133, 0.15);
   color: #ffffff;
+}
+
+/* Barra de navegación inferior móvil */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    height: 60px;
+    padding: 0 1.25rem;
+  }
+
+  .navbar-brand {
+    font-size: 24px;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(20, 9, 23, 0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-surface);
+    z-index: 50;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    transition: color 0.2s ease;
+    flex: 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-item svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    transition: stroke 0.2s ease;
+  }
+
+  .bottom-nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+
+  .bottom-nav-item:hover {
+    color: #ffffff;
+  }
+
+  .bottom-nav-item.active,
+  .bottom-nav-item.active:hover,
+  .bottom-nav-item.active:focus {
+    color: var(--color-accent);
+  }
+
+  .bottom-nav-item.active svg {
+    stroke: var(--color-accent);
+  }
+
+  .bottom-nav-item.active .bottom-nav-label {
+    color: var(--color-accent);
+  }
 }

@@ -45,10 +45,6 @@ lerna-debug.log*
 .env.production.local
 .env.local
 
-# Uploads
-/uploads/*
-!/uploads/.gitkeep
-
 .temp
 .tmp
 
