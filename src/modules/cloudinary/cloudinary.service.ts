@@ -1,8 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import { Readable } from 'stream';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { join } from 'path';
 
 @Injectable()
 export class CloudinaryService {
@@ -28,20 +30,27 @@ export class CloudinaryService {
     file: Express.Multer.File,
     folder: 'avatars' | 'posts',
   ): Promise<string> {
-    if (this.isConfigured()) {
-      try {
-        const result = await this.uploadToCloudinary(file, `trama/${folder}`);
-        this.logger.log(`Imagen subida exitosamente a Cloudinary: ${result.secure_url}`);
-        return result.secure_url;
-      } catch (error) {
-        this.logger.error(
-          'Error al subir imagen a Cloudinary, recurriendo a almacenamiento local',
-          error,
-        );
-      }
+    if (!this.isConfigured()) {
+      this.logger.error('Credenciales de Cloudinary no configuradas en el entorno');
+      throw new InternalServerErrorException(
+        'El servicio de almacenamiento de imágenes en la nube no está configurado',
+      );
     }
 
-    return this.saveToLocalDisk(file, folder);
+    try {
+      const result = await this.uploadToCloudinary(file, `trama/${folder}`);
+      this.logger.log(
+        `Imagen subida exitosamente a Cloudinary: ${result.secure_url}`,
+      );
+      return result.secure_url;
+    } catch (error: any) {
+      this.logger.error(
+        `Error al subir imagen a Cloudinary: ${error?.message || error}`,
+      );
+      throw new InternalServerErrorException(
+        'Ocurrió un error al subir la imagen al servidor en la nube',
+      );
+    }
   }
 
   private uploadToCloudinary(
@@ -68,20 +77,5 @@ export class CloudinaryService {
       const stream = Readable.from(file.buffer);
       stream.pipe(uploadStream);
     });
-  }
-
-  private saveToLocalDisk(
-    file: Express.Multer.File,
-    folder: 'avatars' | 'posts',
-  ): string {
-    const uploadDir = join(process.cwd(), 'uploads', folder);
-    if (!existsSync(uploadDir)) {
-      mkdirSync(uploadDir, { recursive: true });
-    }
-    const ext = file.originalname.split('.').pop() || 'jpg';
-    const filename = `${folder}-${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`;
-    const filePath = join(uploadDir, filename);
-    writeFileSync(filePath, file.buffer);
-    return `/uploads/${folder}/${filename}`;
   }
 }

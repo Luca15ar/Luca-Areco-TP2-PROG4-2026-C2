@@ -220,12 +220,13 @@
   color: var(--color-accent);
 }
 
-/* Separador con margen superior 3.5rem */
+/* Separador con línea indicadora entre publicaciones */
 .article-separator {
-  border-bottom: 1px solid var(--border-surface);
-  margin-top: 3.5rem;
+  border-bottom: 1px solid rgba(251, 113, 133, 0.2);
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
 }
 
-.post-article:last-child .article-separator {
+:host:last-child .article-separator {
   display: none;
 }

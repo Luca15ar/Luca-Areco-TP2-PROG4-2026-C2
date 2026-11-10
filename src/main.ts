@@ -2,9 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication, ExpressAdapter } from '@nestjs/platform-express';
 import express, { Request, Response } from 'express';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { existsSync, mkdirSync } from 'fs';
 import { AppModule } from './app.module.js';
 
 let cachedServer: ((req: Request, res: Response) => void) | null = null;
@@ -27,18 +24,6 @@ export async function bootstrapServer(): Promise<(req: Request, res: Response) =
       transform: true,
     }),
   );
-
-  const uploadsDir = process.env.VERCEL
-    ? join(tmpdir(), 'uploads')
-    : join(process.cwd(), 'uploads');
-
-  if (!existsSync(uploadsDir)) {
-    mkdirSync(uploadsDir, { recursive: true });
-  }
-
-  app.useStaticAssets(uploadsDir, {
-    prefix: '/uploads/',
-  });
 
   await app.init();
   cachedServer = expressApp;
@@ -64,14 +49,6 @@ if (!process.env.VERCEL) {
       transform: true,
     }),
   );
-
-  const uploadsDir = join(process.cwd(), 'uploads');
-  if (!existsSync(uploadsDir)) {
-    mkdirSync(uploadsDir, { recursive: true });
-  }
-  app.useStaticAssets(uploadsDir, {
-    prefix: '/uploads/',
-  });
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
