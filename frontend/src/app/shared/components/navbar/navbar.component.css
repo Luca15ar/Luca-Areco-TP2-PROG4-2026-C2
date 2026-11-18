@@ -122,6 +122,23 @@
   color: #ffffff;
 }
 
+.user-dropdown .btn-dropdown-logout {
+  font-weight: 600;
+}
+
+.user-dropdown .btn-dropdown-logout svg {
+  transition: stroke 0.2s ease;
+}
+
+.user-dropdown .btn-dropdown-logout:hover {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.user-dropdown .btn-dropdown-logout:hover svg {
+  stroke: var(--color-primary);
+}
+
 /* Barra de navegación inferior móvil */
 .bottom-nav {
   display: none;
@@ -152,7 +169,7 @@
     background: rgba(20, 9, 23, 0.96);
     backdrop-filter: blur(12px);
     border-top: 1px solid var(--border-surface);
-    z-index: 50;
+    z-index: 900;
     align-items: center;
     justify-content: space-around;
   }

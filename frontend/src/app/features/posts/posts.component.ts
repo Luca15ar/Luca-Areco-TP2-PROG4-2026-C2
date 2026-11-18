@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PostsService } from '../../core/services/posts.service';
@@ -13,11 +13,24 @@ import { PostCardComponent } from '../../shared/components/post-card/post-card.c
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css'],
 })
-export class PostsComponent implements OnInit {
+export class PostsComponent implements OnInit, OnDestroy {
   private readonly postsService = inject(PostsService);
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+
+  constructor() {
+    effect(() => {
+      const isModalActive = this.isCreateModalOpen() || !!this.postToDelete();
+      document.body.classList.toggle('modal-open', isModalActive);
+      document.documentElement.classList.toggle('modal-open', isModalActive);
+    });
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+  }
 
   readonly posts = signal<Post[]>([]);
   readonly total = signal<number>(0);

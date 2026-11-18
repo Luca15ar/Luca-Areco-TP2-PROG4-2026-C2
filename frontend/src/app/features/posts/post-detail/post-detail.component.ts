@@ -1,7 +1,9 @@
 import {
   Component,
+  OnDestroy,
   OnInit,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -18,11 +20,24 @@ import { Post, PostComment } from '../../../core/models/post.model';
   templateUrl: './post-detail.component.html',
   styleUrl: './post-detail.component.css',
 })
-export class PostDetailComponent implements OnInit {
+export class PostDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly postsService = inject(PostsService);
   private readonly authService = inject(AuthService);
+
+  constructor() {
+    effect(() => {
+      const isModalActive = this.isDeleteModalOpen();
+      document.body.classList.toggle('modal-open', isModalActive);
+      document.documentElement.classList.toggle('modal-open', isModalActive);
+    });
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+  }
 
   readonly post = signal<Post | null>(null);
   readonly comments = signal<PostComment[]>([]);
@@ -55,6 +70,50 @@ export class PostDetailComponent implements OnInit {
     const likes = currentPost.likes || [];
     return likes.some((id) => (typeof id === 'string' ? id : (id as any)._id) === userId);
   });
+
+  readonly isAdmin = computed(() => this.currentUser()?.role === 'administrador');
+
+  readonly canDeletePost = computed(() => {
+    const userId = this.currentUserId();
+    const currentPost = this.post();
+    if (!userId || !currentPost) return false;
+    const author = currentPost.author;
+    const authorId = typeof author === 'string' ? author : author?._id;
+    return authorId === userId || this.isAdmin();
+  });
+
+  readonly isDeleteModalOpen = signal<boolean>(false);
+  readonly isDeletingPost = signal<boolean>(false);
+
+  openDeleteModal(): void {
+    this.isDeleteModalOpen.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalOpen.set(false);
+  }
+
+  confirmDeletePost(): void {
+    const currentPost = this.post();
+    const userId = this.currentUserId();
+    if (!currentPost || !userId) return;
+
+    this.isDeletingPost.set(true);
+    this.postsService.deletePost(currentPost._id, userId).subscribe({
+      next: () => {
+        this.isDeletingPost.set(false);
+        this.closeDeleteModal();
+        this.router.navigate(['/posts']);
+      },
+      error: (err) => {
+        this.isDeletingPost.set(false);
+        this.postErrorMessage.set(
+          err?.error?.message || 'No fue posible eliminar la publicación.',
+        );
+        this.closeDeleteModal();
+      },
+    });
+  }
 
   readonly authorFullName = computed(() => {
     const author = this.post()?.author;

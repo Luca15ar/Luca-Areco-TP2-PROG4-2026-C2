@@ -41,6 +41,11 @@ export class PostsService {
     if (!author) {
       throw new NotFoundException('El usuario autor no existe');
     }
+    if (author.isActive === false) {
+      throw new UnauthorizedException(
+        'Tu cuenta ha sido deshabilitada por un administrador.',
+      );
+    }
 
     let imageUrl = createPostDto.imageUrl?.trim() || '';
     if (file) {
@@ -188,8 +193,8 @@ export class PostsService {
     }
 
     const user = await this.usersService.findById(userId);
-    if (!user) {
-      throw new UnauthorizedException('Usuario no válido para esta operación');
+    if (!user || user.isActive === false) {
+      throw new UnauthorizedException('Tu cuenta ha sido deshabilitada por un administrador.');
     }
 
     const post = await this.postModel.findOne({
@@ -230,6 +235,11 @@ export class PostsService {
       throw new BadRequestException('El identificador del usuario no es válido');
     }
 
+    const user = await this.usersService.findById(userId);
+    if (!user || user.isActive === false) {
+      throw new UnauthorizedException('Tu cuenta ha sido deshabilitada por un administrador.');
+    }
+
     const post = await this.postModel.findOne({
       _id: new Types.ObjectId(id),
       isDeleted: false,
@@ -267,6 +277,11 @@ export class PostsService {
     }
     if (!Types.ObjectId.isValid(userId)) {
       throw new BadRequestException('El identificador del usuario no es válido');
+    }
+
+    const user = await this.usersService.findById(userId);
+    if (!user || user.isActive === false) {
+      throw new UnauthorizedException('Tu cuenta ha sido deshabilitada por un administrador.');
     }
 
     const post = await this.postModel.findOne({
@@ -319,8 +334,8 @@ export class PostsService {
     }
 
     const user = await this.usersService.findById(userId);
-    if (!user || !user.isActive) {
-      throw new UnauthorizedException('Usuario no válido para comentar');
+    if (!user || user.isActive === false) {
+      throw new UnauthorizedException('Tu cuenta ha sido deshabilitada por un administrador.');
     }
 
     const post = await this.postModel.findOne({
@@ -424,6 +439,11 @@ export class PostsService {
     const cleanMessage = (message || '').trim();
     if (!cleanMessage || cleanMessage.length < 2) {
       throw new BadRequestException('El comentario debe tener al menos 2 caracteres');
+    }
+
+    const user = await this.usersService.findById(userId);
+    if (!user || user.isActive === false) {
+      throw new UnauthorizedException('Tu cuenta ha sido deshabilitada por un administrador.');
     }
 
     const post = await this.postModel.findOne({

@@ -1,18 +1,20 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { AutofocusDirective } from '../../../shared/directives/autofocus.directive';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, AutofocusDirective],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
 
   readonly showPassword = signal<boolean>(false);
@@ -23,6 +25,16 @@ export class LoginComponent {
     login: ['', Validators.required],
     password: ['', Validators.required],
   });
+
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      if (params.get('deactivated') === 'true') {
+        this.errorMessage.set(
+          'Tu cuenta ha sido deshabilitada por un administrador.',
+        );
+      }
+    });
+  }
 
   onSubmit(): void {
     const { login, password } = this.loginForm.value;

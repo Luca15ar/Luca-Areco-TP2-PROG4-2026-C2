@@ -22,10 +22,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         const isAuthEndpoint =
           req.url.includes('/api/auth/login') ||
           req.url.includes('/api/auth/register') ||
-          req.url.includes('/api/auth/refresh');
+          req.url.includes('/api/auth/refresh') ||
+          req.url.includes('/api/auth/authorize');
         if (!isAuthEndpoint) {
           authService.logout();
-          router.navigate(['/login']);
+          const isDeactivated =
+            typeof error.error?.message === 'string' &&
+            (error.error.message.includes('deshabilitad') ||
+              error.error.message.includes('desactivad'));
+          router.navigate(['/login'], {
+            queryParams: isDeactivated ? { deactivated: 'true' } : undefined,
+          });
         }
       }
       return throwError(() => error);

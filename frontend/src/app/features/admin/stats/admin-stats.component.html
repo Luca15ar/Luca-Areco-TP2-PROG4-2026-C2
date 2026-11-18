@@ -1,0 +1,250 @@
+<div class="stats-page">
+  <!-- Filtros de lapso de tiempo -->
+  <header class="stats-filter-bar">
+    <div class="preset-group" role="group" aria-label="Filtro rápido de lapso de tiempo">
+      <button
+        type="button"
+        class="preset-btn"
+        [class.active]="selectedPreset() === '7d'"
+        (click)="applyPreset('7d')"
+      >
+        Últimos 7 días
+      </button>
+      <button
+        type="button"
+        class="preset-btn"
+        [class.active]="selectedPreset() === '30d'"
+        (click)="applyPreset('30d')"
+      >
+        Últimos 30 días
+      </button>
+      <button
+        type="button"
+        class="preset-btn"
+        [class.active]="selectedPreset() === '90d'"
+        (click)="applyPreset('90d')"
+      >
+        Últimos 90 días
+      </button>
+      <button
+        type="button"
+        class="preset-btn"
+        [class.active]="selectedPreset() === 'all'"
+        (click)="applyPreset('all')"
+      >
+        Todo el historial
+      </button>
+    </div>
+
+    <div class="custom-dates">
+      <label class="date-field">
+        <span>Desde</span>
+        <input
+          type="date"
+          [ngModel]="customStartDate()"
+          (ngModelChange)="customStartDate.set($event); onCustomDateChange()"
+        />
+      </label>
+      <label class="date-field">
+        <span>Hasta</span>
+        <input
+          type="date"
+          [ngModel]="customEndDate()"
+          (ngModelChange)="customEndDate.set($event); onCustomDateChange()"
+        />
+      </label>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="alert-error" role="alert">
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Gráficos -->
+  <div class="charts-grid" [attr.data-anim]="animationKey()">
+    <!-- Gráfico 1: Barras - Publicaciones por usuario -->
+    <article class="chart-card">
+      <header class="chart-header">
+        <div class="chart-header-text">
+          <span class="chart-eyebrow">Distribución de autoría</span>
+          <h2 class="chart-title">Publicaciones por usuario</h2>
+        </div>
+        <span class="chart-badge">Total: {{ postsByUser().totalPosts }}</span>
+      </header>
+
+      <div class="chart-body">
+        @if (isLoading()) {
+          <div class="chart-loading">
+            <div class="spinner"></div>
+            <span>Calculando publicaciones...</span>
+          </div>
+        } @else if (postsByUser().users.length === 0) {
+          <div class="chart-empty">
+            <p>No se registraron publicaciones en el lapso seleccionado.</p>
+          </div>
+        } @else {
+          <div class="bar-chart-container">
+            <div class="bar-chart">
+              @for (user of postsByUser().users.slice(0, 8); track user.userId; let i = $index) {
+                <div class="bar-column">
+                  <div class="bar-tooltip">{{ user.count }} {{ user.count === 1 ? 'publicación' : 'publicaciones' }}</div>
+                  <div class="bar-track">
+                    <div
+                      class="bar-fill"
+                      [style.height.%]="(user.count / maxPostsCount()) * 100"
+                      [style.animation-delay.ms]="i * 70"
+                    ></div>
+                  </div>
+                  <span class="bar-label" title="{{ user.name }}">&#64;{{ user.username }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+
+    <!-- Gráfico 2: Líneas - Evolución temporal de comentarios -->
+    <article class="chart-card">
+      <header class="chart-header">
+        <div class="chart-header-text">
+          <span class="chart-eyebrow">Actividad conversacional</span>
+          <h2 class="chart-title">Comentarios en el tiempo</h2>
+        </div>
+        <span class="chart-badge">Total: {{ commentsTimeline().totalComments }}</span>
+      </header>
+
+      <div class="chart-body">
+        @if (isLoading()) {
+          <div class="chart-loading">
+            <div class="spinner"></div>
+            <span>Calculando comentarios...</span>
+          </div>
+        } @else if (commentsTimeline().timeline.length === 0) {
+          <div class="chart-empty">
+            <p>No se registraron comentarios en el lapso seleccionado.</p>
+          </div>
+        } @else {
+          <div class="line-chart-container">
+            <svg class="line-svg" viewBox="0 0 500 180" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#fb7185" stop-opacity="0.35"></stop>
+                  <stop offset="100%" stop-color="#fb7185" stop-opacity="0.0"></stop>
+                </linearGradient>
+              </defs>
+
+              <!-- Área bajo la curva -->
+              <path [attr.d]="areaSvgPath()" fill="url(#areaGradient)" class="svg-area-fill"></path>
+
+              <!-- Línea trazada animada -->
+              <path [attr.d]="lineSvgPath()" fill="none" stroke="#fb7185" stroke-width="3" class="svg-line-path"></path>
+
+              <!-- Puntos de datos -->
+              @for (pt of timelinePoints(); track pt.date; let i = $index) {
+                <g class="svg-point-group" [style.animation-delay.ms]="i * 50">
+                  <circle
+                    [attr.cx]="pt.x"
+                    [attr.cy]="pt.y"
+                    r="4.5"
+                    fill="#fff"
+                    stroke="#fb7185"
+                    stroke-width="2.5"
+                    class="svg-point"
+                  >
+                    <title>{{ pt.date }}: {{ pt.count }} comentarios</title>
+                  </circle>
+                </g>
+              }
+            </svg>
+
+            <!-- Fechas de referencia -->
+            <div class="timeline-labels">
+              <span>{{ timelinePoints()[0]?.date }}</span>
+              <span>{{ timelinePoints()[timelinePoints().length - 1]?.date }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+
+    <!-- Gráfico 3: Dona - Comentarios por publicación -->
+    <article class="chart-card chart-card-wide">
+      <header class="chart-header">
+        <div class="chart-header-text">
+          <span class="chart-eyebrow">Historias más comentadas</span>
+          <h2 class="chart-title">Comentarios por publicación</h2>
+        </div>
+        <span class="chart-badge">Total analizado: {{ commentsByPost().totalComments }}</span>
+      </header>
+
+      <div class="chart-body">
+        @if (isLoading()) {
+          <div class="chart-loading">
+            <div class="spinner"></div>
+            <span>Calculando distribución...</span>
+          </div>
+        } @else if (donutSlices().length === 0) {
+          <div class="chart-empty">
+            <p>No se encontraron publicaciones con comentarios en el lapso seleccionado.</p>
+          </div>
+        } @else {
+          <div class="donut-chart-layout">
+            <div class="donut-svg-wrapper">
+              <svg viewBox="0 0 160 160" class="donut-svg">
+                <!-- Círculo de fondo base -->
+                <circle
+                  cx="80"
+                  cy="80"
+                  r="60"
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.05)"
+                  stroke-width="18"
+                ></circle>
+
+                <!-- Rebanadas de dona animadas -->
+                @for (slice of donutSlices(); track slice.title; let i = $index) {
+                  <circle
+                    cx="80"
+                    cy="80"
+                    r="60"
+                    fill="none"
+                    [attr.stroke]="slice.color"
+                    stroke-width="18"
+                    [attr.stroke-dasharray]="slice.strokeDasharray"
+                    [attr.stroke-dashoffset]="slice.strokeDashoffset"
+                    class="donut-segment"
+                    [style.animation-delay.ms]="i * 80"
+                  >
+                    <title>{{ slice.title }}: {{ slice.count }} {{ slice.count === 1 ? 'comentario' : 'comentarios' }} ({{ slice.percentage }}%)</title>
+                  </circle>
+                }
+              </svg>
+
+              <!-- Texto en el centro de la dona -->
+              <div class="donut-center-info">
+                <span class="donut-center-num">{{ commentsByPost().totalComments }}</span>
+                <span class="donut-center-label">{{ commentsByPost().totalComments === 1 ? 'Comentario' : 'Comentarios' }}</span>
+              </div>
+            </div>
+
+            <!-- Leyenda de colores -->
+            <div class="donut-legend">
+              @for (slice of donutSlices(); track slice.title) {
+                <div class="legend-item">
+                  <span class="legend-color" [style.background-color]="slice.color"></span>
+                  <div class="legend-info">
+                    <span class="legend-title" title="{{ slice.title }}">{{ slice.title }}</span>
+                    <span class="legend-stat">{{ slice.count }} {{ slice.count === 1 ? 'comentario' : 'comentarios' }} ({{ slice.percentage }}%)</span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,11 +12,24 @@ import { Post } from '../../core/models/post.model';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   readonly authService = inject(AuthService);
   private readonly postsService = inject(PostsService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+
+  constructor() {
+    effect(() => {
+      const isModalActive = this.isEditModalOpen() || !!this.postToDelete();
+      document.body.classList.toggle('modal-open', isModalActive);
+      document.documentElement.classList.toggle('modal-open', isModalActive);
+    });
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+  }
 
   readonly user = this.authService.currentUser;
   readonly userPosts = signal<Post[]>([]);
@@ -99,11 +112,6 @@ export class ProfileComponent implements OnInit {
     } catch {
       return dateStr;
     }
-  }
-
-  handleLogout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   openEditModal(): void {
@@ -223,7 +231,7 @@ export class ProfileComponent implements OnInit {
       window.scrollTo(0, 0);
     }
     if (!this.user()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login'], { queryParamsHandling: 'preserve' });
       return;
     }
     this.loadUserRecentPosts();

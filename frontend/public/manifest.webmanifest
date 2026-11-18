@@ -1,0 +1,18 @@
+{
+  "name": "Trama — Red Social",
+  "short_name": "Trama",
+  "theme_color": "#120b10",
+  "background_color": "#0b0709",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "description": "Historias que se quedan contigo. Red social editorial.",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

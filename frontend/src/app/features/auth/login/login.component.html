@@ -13,7 +13,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
       <label>
         Usuario o correo
-        <input formControlName="login" placeholder="nombre@correo.com" />
+        <input formControlName="login" placeholder="nombre@correo.com" appAutofocus />
         @if (loginForm.get('login')?.touched && loginForm.get('login')?.errors) {
           <small class="field-error">
             @if (loginForm.get('login')?.hasError('required')) {

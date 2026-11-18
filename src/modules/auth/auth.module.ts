@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module.js';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module.js';
@@ -7,7 +7,7 @@ import { AuthController } from './auth.controller.js';
 
 @Module({
   imports: [
-    UsersModule,
+    forwardRef(() => UsersModule),
     CloudinaryModule,
     JwtModule.registerAsync({
       useFactory: () => ({

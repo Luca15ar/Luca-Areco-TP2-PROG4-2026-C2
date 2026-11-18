@@ -3,6 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './schemas/post.schema.js';
 import { PostsService } from './posts.service.js';
 import { PostsController } from './posts.controller.js';
+import { StatsService } from './stats.service.js';
+import { StatsController } from './stats.controller.js';
 import { UsersModule } from '../users/users.module.js';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module.js';
 import { AuthModule } from '../auth/auth.module.js';
@@ -14,8 +16,8 @@ import { AuthModule } from '../auth/auth.module.js';
     CloudinaryModule,
     AuthModule,
   ],
-  controllers: [PostsController],
-  providers: [PostsService],
-  exports: [PostsService],
+  controllers: [PostsController, StatsController],
+  providers: [PostsService, StatsService],
+  exports: [PostsService, StatsService],
 })
 export class PostsModule {}

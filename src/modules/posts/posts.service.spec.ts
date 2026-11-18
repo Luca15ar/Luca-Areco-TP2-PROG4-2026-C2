@@ -38,7 +38,13 @@ describe('PostsService', () => {
     mockPostModel.aggregate = vi.fn();
 
     mockUsersService = {
-      findById: vi.fn(),
+      findById: vi.fn().mockResolvedValue({
+        _id: validAuthorId,
+        firstName: 'Luca',
+        lastName: 'Areco',
+        role: 'usuario',
+        isActive: true,
+      }),
     };
 
     mockCloudinaryService = {

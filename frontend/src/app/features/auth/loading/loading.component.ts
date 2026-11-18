@@ -23,9 +23,15 @@ export class LoadingComponent implements OnInit {
       next: () => {
         this.router.navigate(['/posts']);
       },
-      error: () => {
+      error: (err) => {
         this.authService.logout();
-        this.router.navigate(['/login']);
+        const isDeactivated =
+          err?.status === 401 &&
+          (err?.error?.message?.includes('deshabilitado') ||
+            err?.error?.message?.includes('desactivado'));
+        this.router.navigate(['/login'], {
+          queryParams: isDeactivated ? { deactivated: 'true' } : undefined,
+        });
       },
     });
   }

@@ -44,6 +44,22 @@
               </div>
             </div>
           </div>
+
+          @if (canDeletePost()) {
+            <button
+              type="button"
+              class="btn-delete-post"
+              (click)="openDeleteModal()"
+              title="Eliminar publicación"
+              aria-label="Eliminar publicación"
+            >
+              <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              <span>Eliminar</span>
+            </button>
+          }
         </header>
 
         <!-- Título -->
@@ -261,4 +277,30 @@
       </section>
     }
   </div>
+
+  <!-- Modal de confirmación para eliminar publicación -->
+  @if (isDeleteModalOpen()) {
+    <div class="modal-backdrop">
+      <div class="modal-card modal-confirm" role="alertdialog" aria-modal="true" aria-labelledby="delete-post-title">
+        <header class="modal-header">
+          <span class="modal-eyebrow">Confirmación</span>
+          <h2 id="delete-post-title" class="modal-title">Eliminar publicación</h2>
+        </header>
+
+        <div class="confirm-body">
+          <p>¿Estás seguro de que deseas eliminar esta publicación?</p>
+          <p class="confirm-hint">Esta acción dará de baja la historia y sus comentarios dejarán de estar disponibles.</p>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()" [disabled]="isDeletingPost()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-modal-delete" (click)="confirmDeletePost()" [disabled]="isDeletingPost()">
+            {{ isDeletingPost() ? 'Eliminando...' : 'Eliminar historia' }}
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
 </div>

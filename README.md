@@ -16,36 +16,58 @@ La arquitectura del sistema está organizada como un monorepositorio que combina
 
 ## 2. Cronograma y estado de los sprints
 
-El ciclo de desarrollo del proyecto está estructurado en iteraciones regulares con una cadencia de entrega de **7 días corridos** por cada sprint:
+El ciclo de desarrollo del proyecto está estructurado en cuatro iteraciones:
 
 | Iteración | Fecha límite de entrega | Alcance temático principal | Estado actual |
 | :--- | :--- | :--- | :--- |
 | **Sprint 1** | **04/11/2026** | **Fundamentos, autenticación, identidad visual y estructura base** | **Completado al 100%** |
-| Sprint 2 | 11/11/2026 | Feed de publicaciones, editor de texto, interacción básica y reacciones | Planificado |
-| Sprint 3 | 18/11/2026 | Perfiles de usuario ampliados, gestión de seguimiento y multimedia | Planificado |
-| Sprint 4 | 25/11/2026 | Panel de administración, métricas avanzadas, moderación y cierre | Planificado |
+| **Sprint 2** | **11/11/2026** | **Muro de historias, creación, detalle, comentarios y reacciones** | **Completado al 100%** |
+| **Sprint 3** | **18/11/2026** | **Perfil personal, edición de cuenta, control de sesión e imágenes** | **Completado al 100%** |
+| **Sprint 4** | **25/11/2026** | **Administración, estadísticas, gestión de usuarios y PWA** | **Completado al 100%** |
 
-### Puntos del Sprint 1 y nivel de completitud
+### 2.1. Alcance completado por sprint
 
-A continuación se detallan los requisitos exigidos para el primer sprint de la plataforma, indicando el estado de cumplimiento de cada uno:
+#### Sprint 1: Fundamentos y autenticación
+* [x] Monorepositorio con NestJS (backend) y Angular (frontend) con scripts concurrentes (`npm run start:all`).
+* [x] Base de datos MongoDB Atlas con Mongoose y esquema `User` con bajas lógicas (`isActive`).
+* [x] Autenticación mediante JWT, encriptación con `bcrypt` y endpoints de registro e inicio de sesión.
+* [x] Pantallas de inicio de sesión (`/login`), registro (`/register`) y transición (`/loading`).
+* [x] Barra de navegación (`NavbarComponent`) con conmutador de tema claro/oscuro y menú de usuario.
+* [x] Identidad editorial, maquetación con CSS puro nativo y erradicación total de emojis.
 
-* [x] **Configuración del monorepositorio y entornos de ejecución:** Estructuración limpia del servidor en NestJS (raíz `/`) y del cliente en Angular (`/frontend`), con scripts de desarrollo unificado (`npm run start:all`).
-* [x] **Conexión y modelado de datos en MongoDB:** Configuración de la conexión mediante Mongoose y definición del esquema `User` con campos de identidad (`firstName`, `lastName`, `email`, `username`, `password`, `birthdate`, `bio`, `avatarUrl`, `role`, `isActive`).
-* [x] **Servicio de autenticación en backend (NestJS):**
-  * Endpoint `POST /auth/register` con encriptación de contraseñas mediante `bcrypt`, validación estricta de DTOs (`RegisterDto`) y procesamiento de imágenes de perfil con Multer.
-  * Endpoint `POST /auth/login` con soporte para autenticación indistinta mediante nombre de usuario o correo electrónico.
-  * Servicio de archivos estáticos para servir imágenes desde la carpeta `/uploads`.
-* [x] **Enrutamiento inicial estricto:** Redirección automática de la ruta raíz (`/`) hacia `/login`, garantizando que ningún usuario no autenticado acceda a feeds o pantallas intermedias.
-* [x] **Pantalla de inicio de sesión (`/login`):** Formulario reactivo con control de visibilidad de contraseña (icono SVG interactivo), persistencia de sesión local y validaciones en tiempo real.
-* [x] **Pantalla de registro (`/register`):** Formulario reactivo de alta de cuenta con confirmación de clave, selector de fecha de nacimiento, selector de avatar con previsualización en miniatura y validación estricta alfabética en nombre y apellido (bloqueo total de números o caracteres especiales).
-* [x] **Experiencia de validación en formularios:**
-  * Botones de envío («Iniciar sesión» y «Crear cuenta») habilitados por defecto, deshabilitándose solo durante el procesamiento de la solicitud (`[disabled]="isLoading()"`).
-  * Notificación general de aviso si el usuario pulsa el botón con todos los campos vacíos (*«Por favor, completa todos los campos para continuar.»*).
-  * Mensajes de error contextuales debajo de cada campo incorrecto mediante etiquetas `<small class="field-error">`.
-* [x] **Pantalla de carga (`/loading`):** Componente de preloader con animación CSS de pulso concéntrico y tipografía en estilo *sentence case*.
-* [x] **Barra de navegación principal (`NavbarComponent`):** Cabecera contextual (oculta de forma automática en `/login`, `/register` y `/loading`), con logotipo editorial, alternador de temas claro/oscuro y menú desplegable de usuario.
-* [x] **Estructura base de navegación para accesibilidad:** Creación de los cascarones base de `/posts` y `/profile` para garantizar la navegabilidad requerida en el Sprint 1 sin adelantar contenidos estáticos del Sprint 2.
-* [x] **Normativa lingüística e iconográfica estricta:** Interfaz completamente en español, uso riguroso del estilo *sentence case* en títulos y botones, prohibición absoluta de abreviaciones informales y erradicación total de emojis en favor de gráficos SVG vectoriales nativos.
+#### Sprint 2: Historias, comentarios y reacciones
+* [x] Feed de publicaciones (`/posts`) con diseño de tarjeta editorial, vista previa y metadatos del autor.
+* [x] Editor modal de publicaciones con conteo en tiempo real de palabras y caracteres.
+* [x] Subida opcional de imágenes optimizadas a Cloudinary con previsualización inmediata.
+* [x] Sistema reactivo de «me gusta» con actualización optimista y persistencia en base de datos.
+* [x] Paginación bajo demanda con botón «Cargar más historias» y ordenamiento por fecha o cantidad de reacciones.
+* [x] Pantalla de detalle de publicación (`/posts/:id`) con visualización completa del ensayo.
+* [x] Hilo de comentarios con paginación, formulario reactivo de respuesta y borrado lógico.
+* [x] Modal personalizado de confirmación de eliminación de publicaciones para el autor o administrador.
+
+#### Sprint 3: Perfil, control de sesión y multimedia
+* [x] Pantalla de perfil personal (`/profile`) con métricas de autoría, fecha de registro y biografía.
+* [x] Listado de historias propias publicadas con acciones directas de visualización y borrado.
+* [x] Modal de edición de perfil con actualización de nombres, usuario, fecha de nacimiento, biografía y foto de perfil.
+* [x] Control proactivo de caducidad de sesión mediante token JWT y modal de advertencia preventiva (`SessionModalComponent`).
+* [x] Renovación silenciosa de sesión (*refresh token*) o cierre seguro tras inactividad.
+
+#### Sprint 4: Administración, métricas y PWA
+* [x] Sistema de control de acceso basado en roles (`administrador` y `usuario`) con guardias de ruta (`AdminGuard` y `AuthGuard`).
+* [x] Directorio administrativo de usuarios (`/dashboard`):
+  * Tarjetas de métricas consolidadas (total de usuarios, activos, deshabilitados y administradores).
+  * Buscador reactivo en tiempo real por nombre, usuario o correo electrónico.
+  * Control tipo interruptor (*switch*) accesible para habilitar o deshabilitar cuentas con modal de confirmación.
+  * Formulario modal para el alta de nuevos usuarios con asignación de perfil de permisos.
+* [x] Módulo de estadísticas visuales (`/dashboard/estadisticas`):
+  * Gráfico de barras SVG de publicaciones por usuario.
+  * Gráfico de línea temporal SVG de evolución de comentarios en el tiempo.
+  * Gráfico de dona SVG para la distribución de comentarios por historia.
+  * Filtros de lapso temporal interactivos (7 días, 30 días, 90 días, historial completo o rango de fechas manual).
+* [x] Progressive Web App (PWA):
+  * Manifiesto web (`manifest.webmanifest`) configurado en modo `standalone`, con paleta editorial e íconos adaptables.
+  * Service Worker con `@angular/service-worker` para almacenamiento en caché estática y soporte sin conexión (*offline*).
+* [x] Experiencia de modales accesible con bloqueo estricto de desplazamiento del fondo (`body.modal-open` y `html.modal-open`).
 
 ---
 
@@ -78,25 +100,66 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Disco central con la letra inicial de Trama rodeado por dos anillos concéntricos con animación de pulsación suave en CSS puro.
   * Leyenda inferior con tipografía serif en estilo *sentence case*: *«Tejiendo historias...»*.
 
-### 3.4. Pantalla del feed de publicaciones (`/posts`)
-* **Propósito:** Cascarón base navegable del muro principal de publicaciones.
+### 3.4. Pantalla del muro de publicaciones (`/posts`)
+* **Propósito:** Espacio central de lectura y descubrimiento de relatos, crónicas y microensayos.
 * **Características:**
-  * Componente limpio y libre de datos falsos o estáticos, preparado para recibir el servicio de publicaciones en el Sprint 2.
-  * Presenta un contenedor sobrio que respeta la identidad visual y confirma la accesibilidad del enrutamiento.
+  * Listado paginado bajo demanda con botón «Cargar más historias» para preservar un consumo pausado y eficiente.
+  * Selector de ordenamiento dinámico: «Más recientes», «Más antiguas» y «Más valoradas».
+  * Tarjetas de publicación con diseño editorial: avatar del autor, fecha de publicación amigable, fragmento de lectura con opción de desplegar texto completo, imagen fotográfica optimizada y contador reactivo de reacciones.
+  * Interacción de «me gusta» con actualización optimista inmediata en la interfaz y persistencia en base de datos.
+  * Modal para redactar y publicar historias con conteo en tiempo real de palabras y caracteres, selector opcional de imagen y bloqueo estricto del desplazamiento de fondo.
+  * Botón flotante accesible y botón de cabecera «Nueva historia» para agilizar la creación desde cualquier punto del muro.
 
-### 3.5. Pantalla de perfil de usuario (`/profile`)
-* **Propósito:** Cascarón base del espacio personal del autor.
+### 3.5. Pantalla de detalle de publicación (`/posts/:id`)
+* **Propósito:** Experiencia de lectura inmersiva y completa de una historia individual con su conversación comunitaria.
 * **Características:**
-  * Vista reservada para la futura edición de biografía, estadísticas personales y archivo de publicaciones del Sprint 2 y Sprint 3.
-  * Accesible directamente desde el menú desplegable de la barra de navegación superior.
+  * Presentación tipográfica generosa a página completa con metadatos del autor y fecha de publicación.
+  * Barra de acciones con contador de «me gusta», botón para copiar enlace al portapapeles y botón de eliminación para el autor o administradores con modal de confirmación.
+  * Sección integral de comentarios: listado paginado, identificación del autor, fecha relativa y borrado lógico de aportes.
+  * Formulario reactivo para publicar nuevos comentarios con validación instantánea.
 
-### 3.6. Barra de navegación superior (`NavbarComponent`)
+### 3.6. Pantalla de perfil personal (`/profile`)
+* **Propósito:** Espacio íntimo del autor para consultar su trayectoria, estadísticas personales y archivo de publicaciones.
+* **Características:**
+  * Cabecera con avatar en alta definición, nombre completo, nombre de usuario, biografía y fecha de incorporación.
+  * Tarjetas de métricas consolidadas: total de historias publicadas y suma de valoraciones recibidas.
+  * Modal de edición de perfil para actualizar nombre, apellido, usuario, fecha de nacimiento, biografía y fotografía de perfil con previsualización inmediata.
+  * Listado de historias de autoría propia con acceso directo a lectura completa o eliminación mediante confirmación modal.
+
+### 3.7. Panel administrativo de gestión de usuarios (`/dashboard` o `/dashboard/usuarios`)
+* **Propósito:** Directorio y consola de control para la administración de integrantes de la plataforma.
+* **Características:**
+  * Acceso estrictamente reservado a cuentas con rol de `administrador` mediante guardia de ruta `AdminGuard`.
+  * Tarjetas de indicadores globales: total de usuarios, cuentas activas, cuentas deshabilitadas y administradores.
+  * Buscador reactivo en tiempo real con filtrado simultáneo por nombre, apellido, usuario o correo electrónico.
+  * Tabla editorial con datos clave, insignia de rol e indicador visual de estado.
+  * Control tipo interruptor (*switch*) accesible con animación CSS suave para alternar entre habilitar o deshabilitar cuentas, acompañado de un modal de confirmación con bloqueo de desplazamiento.
+  * Formulario modal para el alta de nuevos usuarios desde el panel con asignación directa de rol de acceso.
+
+### 3.8. Panel administrativo de estadísticas y métricas (`/dashboard/estadisticas`)
+* **Propósito:** Visualización analítica del rendimiento editorial y la actividad de la comunidad.
+* **Características:**
+  * Gráfico de barras SVG nativo: clasificación de publicaciones realizadas por autor.
+  * Gráfico de línea temporal SVG nativo: evolución histórica del volumen de comentarios a lo largo del tiempo.
+  * Gráfico de dona SVG nativo: proporción y distribución de comentarios recibidos por cada historia.
+  * Selector interactivo de periodos: últimas 24 horas, 7 días, 30 días, 90 días, historial completo o rango de fechas personalizado.
+
+### 3.9. Modal de control y advertencia de sesión (`SessionModalComponent`)
+* **Propósito:** Salvaguardar la seguridad de la cuenta informando oportunamente antes de la expiración del token JWT.
+* **Características:**
+  * Detección automática cuando restan 2 minutos para que caduque el token de acceso.
+  * Apertura de un diálogo modal que bloquea el fondo y presenta una cuenta regresiva visual en segundos.
+  * Opción «Continuar sesión» para solicitar silenciosamente la renovación del token sin perder el contexto de navegación.
+  * Opción «Cerrar sesión» para terminar la sesión de manera segura e inmediata.
+
+### 3.10. Barra de navegación superior (`NavbarComponent`)
 * **Propósito:** Proporcionar orientación, control de identidad y navegación general por la plataforma.
 * **Características:**
-  * Visibilidad condicional: permanece oculta en las pantallas de acceso (`/login`, `/register`, `/loading`) y se renderiza únicamente dentro de la aplicación principal.
+  * Visibilidad condicional: permanece oculta en las pantallas de acceso (`/login`, `/register`, `/loading`) y se renderiza en las vistas autenticadas.
   * Logotipo tipográfico `trama.` en fuente serif con acento en el punto final.
+  * Enlace al panel de administración visible de manera exclusiva para usuarios con rol de administrador.
   * Conmutador interactivo de tema visual (modo oscuro / modo claro) con persistencia en el almacenamiento local.
-  * Menú desplegable de usuario que exhibe el avatar del perfil activo y enlaces para acceder a «Mi perfil» o «Cerrar sesión».
+  * Menú desplegable de usuario que exhibe el avatar del perfil activo y accesos para «Mi perfil» o «Cerrar sesión».
 
 ---
 
@@ -187,3 +250,62 @@ npm run start:all
   npm test
   npm --prefix frontend test -- --watch=false
   ```
+
+### 5.5. Guía de verificación y prueba de la Progressive Web App (PWA)
+
+La aplicación incorpora soporte nativo para **Progressive Web App** mediante `@angular/service-worker` y el manifiesto web estandarizado (`manifest.webmanifest`), permitiendo instalar la plataforma como una aplicación de escritorio o móvil independiente con ejecución a pantalla completa y soporte de caché para recursos estáticos.
+
+Dado que los navegadores exigen el protocolo seguro HTTPS o el origen `localhost` con la compilación de producción para habilitar el *Service Worker*:
+
+#### Prueba local en entorno de desarrollo:
+1. Generar la compilación optimizada de producción del cliente:
+   ```bash
+   npm --prefix frontend run build
+   ```
+2. Servir la carpeta de salida generada (`frontend/dist/frontend/browser`) mediante un servidor HTTP estático (por ejemplo, con `npx serve` o `http-server`):
+   ```bash
+   npx serve -s frontend/dist/frontend/browser -p 8080
+   ```
+3. Abrir en Google Chrome o Microsoft Edge la dirección `http://localhost:8080`.
+4. Abrir las herramientas de desarrollo (*DevTools*, tecla F12) y dirigirse a la pestaña **Aplicación** (*Application*):
+   * En la sección **Manifiesto** (*Manifest*): verificar que se carguen el nombre «Trama», el color de tema ciruela y los iconos adaptables.
+   * En la sección **Trabajadores de servicio** (*Service Workers*): confirmar que el archivo `ngsw-worker.js` figure en estado activo y en ejecución.
+5. Observar en el extremo derecho de la barra de direcciones del navegador el icono de instalación («Instalar Trama»). Al pulsar dicho botón, la aplicación se abrirá en una ventana autónoma sin barras del navegador.
+
+#### Prueba en dispositivos móviles con el sitio desplegado en producción:
+1. Una vez desplegada la aplicación en un servidor accesible bajo HTTPS (por ejemplo en Vercel, Netlify, Render o Railway):
+2. **En dispositivos Android (Google Chrome):**
+   * Abrir la dirección web de Trama.
+   * El navegador desplegará automáticamente el aviso emergente inferior «Agregar Trama a la pantalla principal» o se podrá presionar el menú de tres puntos y seleccionar «Instalar aplicación».
+   * La aplicación creará un icono propio en el cajón de aplicaciones y abrirá la experiencia a pantalla completa sin los controles del navegador.
+3. **En dispositivos iOS (Apple Safari):**
+   * Abrir la URL en Safari.
+   * Presionar el botón de compartir (icono de cuadro con flecha hacia arriba).
+   * Elegir la opción «Agregar a la pantalla de inicio».
+
+---
+
+## 6. Arquitectura y catálogo de rutas de la API
+
+La API REST del backend en NestJS expone los siguientes módulos y puntos de enlace (*endpoints*):
+
+| Módulo | Método | Ruta | Acceso | Descripción del servicio |
+| :--- | :--- | :--- | :--- | :--- |
+| **Autenticación** | `POST` | `/api/auth/register` | Público | Alta y registro de nuevos usuarios en la plataforma |
+| | `POST` | `/api/auth/login` | Público | Validación de credenciales y emisión de token JWT |
+| | `GET` | `/api/auth/authorize` | Autenticado | Verificación del estado de sesión y rol del usuario actual |
+| | `POST` | `/api/auth/refresh` | Autenticado | Renovación preventiva del token JWT de acceso |
+| **Usuarios** | `GET` | `/api/users/profile` | Autenticado | Consulta de información detallada del perfil propio |
+| | `PUT` | `/api/users/profile` | Autenticado | Actualización de datos personales y fotografía de perfil |
+| | `GET` | `/api/users/admin/all` | Administrador | Listado integral de usuarios registrados con métricas |
+| | `POST` | `/api/users/admin/create` | Administrador | Creación administrativa de usuarios con rol asignado |
+| | `PATCH` | `/api/users/admin/:id/toggle-status` | Administrador | Habilitación o deshabilitación lógica de una cuenta |
+| **Publicaciones** | `GET` | `/api/posts` | Autenticado | Feed paginado de historias con soporte de ordenamiento |
+| | `POST` | `/api/posts` | Autenticado | Creación de una nueva historia con imagen opcional |
+| | `GET` | `/api/posts/:id` | Autenticado | Consulta detallada de una publicación individual |
+| | `DELETE` | `/api/posts/:id` | Autor / Admin | Eliminación lógica de una historia |
+| | `POST` | `/api/posts/:id/like` | Autenticado | Registro o retiro reactivo de la valoración «me gusta» |
+| **Comentarios** | `GET` | `/api/posts/:id/comments` | Autenticado | Listado paginado de comentarios de una historia |
+| | `POST` | `/api/posts/:id/comments` | Autenticado | Publicación de un nuevo comentario en una historia |
+| | `DELETE` | `/api/posts/:id/comments/:commentId` | Autor / Admin | Borrado lógico de un comentario |
+| **Estadísticas** | `GET` | `/api/stats/summary` | Administrador | Métricas agregadas y datos para gráficos de análisis |

@@ -115,24 +115,6 @@
   opacity: 0.8;
 }
 
-.btn-logout-profile {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.btn-logout-profile:hover {
-  color: var(--color-error, #f43f5e);
-}
-
 @media (max-width: 600px) {
   .profile-container {
     padding: 2rem 1.25rem 5.5rem;
@@ -280,6 +262,7 @@
   margin: 0 0 1rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -302,6 +285,7 @@
 
 .grid-story-card.no-image .story-excerpt {
   -webkit-line-clamp: 5;
+  line-clamp: 5;
   color: #e5dbe3;
 }
 

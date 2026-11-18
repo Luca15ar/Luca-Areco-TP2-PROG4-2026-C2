@@ -1,0 +1,456 @@
+<div class="users-management">
+  <!-- Mensajes globales de éxito o error -->
+  @if (successMessage()) {
+    <div class="alert-banner alert-success" role="status">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert-banner alert-error" role="alert">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Métricas rápidas -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <span class="metric-label">Total de usuarios</span>
+      <span class="metric-value">{{ totalUsersCount() }}</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-label">Cuentas activas</span>
+      <span class="metric-value status-active">{{ activeUsersCount() }}</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-label">Deshabilitadas</span>
+      <span class="metric-value status-disabled">{{ disabledUsersCount() }}</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-label">Administradores</span>
+      <span class="metric-value status-admin">{{ adminUsersCount() }}</span>
+    </div>
+  </div>
+
+  <!-- Barra de acciones y búsqueda -->
+  <div class="actions-bar">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="search"
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        placeholder="Buscar por nombre, usuario o correo..."
+        class="search-input"
+        aria-label="Buscar usuarios"
+      />
+    </div>
+
+    <button type="button" class="btn-create" (click)="openCreateModal()">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <span>Crear nuevo usuario</span>
+    </button>
+  </div>
+
+  <!-- Listado de usuarios -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Cargando directorio de usuarios...</span>
+    </div>
+  } @else if (filteredUsers().length === 0) {
+    <div class="empty-state">
+      <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>No se encontraron usuarios que coincidan con la búsqueda.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Registro</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filteredUsers(); track user._id) {
+            <tr [class.row-disabled]="!user.isActive">
+              <td class="user-cell">
+                <div class="avatar-wrapper">
+                  @if (user.avatarUrl) {
+                    <img
+                      [src]="user.avatarUrl"
+                      [alt]="user.firstName"
+                      appImageFallback
+                      class="user-avatar"
+                    />
+                  } @else {
+                    <div class="avatar-placeholder">
+                      {{ user.firstName.charAt(0).toUpperCase() }}
+                    </div>
+                  }
+                </div>
+                <div class="user-info">
+                  <span class="user-fullname">{{ user.firstName }} {{ user.lastName }}</span>
+                  <span class="user-handle">&#64;{{ user.username }}</span>
+                </div>
+              </td>
+              <td class="email-cell">{{ user.email }}</td>
+              <td>
+                <span
+                  class="badge-role"
+                  [class.badge-admin]="user.role === 'administrador'"
+                >
+                  {{ user.role | userRoleBadge }}
+                </span>
+              </td>
+              <td>
+                <span
+                  class="badge-status"
+                  [class.badge-active]="user.isActive"
+                  [class.badge-inactive]="!user.isActive"
+                >
+                  {{ user.isActive ? 'Activo' : 'Deshabilitado' }}
+                </span>
+              </td>
+              <td class="date-cell">{{ user.createdAt | relativeTime }}</td>
+              <td class="text-right actions-cell">
+                <div class="switch-container">
+                  <button
+                    type="button"
+                    role="switch"
+                    [attr.aria-checked]="user.isActive"
+                    class="switch-btn"
+                    [class.active]="user.isActive"
+                    (click)="confirmToggleStatus(user)"
+                    [title]="user.isActive ? 'Deshabilitar cuenta' : 'Habilitar cuenta'"
+                    [attr.aria-label]="user.isActive ? 'Deshabilitar cuenta de ' + user.username : 'Habilitar cuenta de ' + user.username"
+                  >
+                    <span class="switch-thumb"></span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Modal: Crear nuevo usuario -->
+@if (isCreateModalOpen()) {
+  <div class="modal-backdrop">
+    <div
+      class="modal-card"
+      appClickOutside
+      (clickOutside)="closeCreateModal()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <header class="modal-header">
+        <div>
+          <span class="modal-eyebrow">Administración</span>
+          <h2 id="modal-title" class="modal-title">Crear nuevo usuario</h2>
+        </div>
+        <button
+          type="button"
+          class="btn-close-modal"
+          (click)="closeCreateModal()"
+          aria-label="Cerrar modal"
+          [disabled]="isSubmitting()"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <form [formGroup]="userForm" (ngSubmit)="submitCreateUser()" class="modal-form">
+        <div class="form-row">
+          <label>
+            Nombre
+            <input
+              type="text"
+              formControlName="firstName"
+              placeholder="Nombre"
+              maxlength="25"
+              appAutofocus
+            />
+            @if (userForm.get('firstName')?.touched && userForm.get('firstName')?.errors) {
+              <small class="field-error">
+                @if (userForm.get('firstName')?.hasError('required')) {
+                  El nombre es obligatorio.
+                } @else if (userForm.get('firstName')?.hasError('pattern')) {
+                  Solo se permiten letras.
+                } @else if (userForm.get('firstName')?.hasError('minlength')) {
+                  Debe tener al menos 2 letras.
+                } @else if (userForm.get('firstName')?.hasError('maxlength')) {
+                  No puede superar los 25 caracteres.
+                }
+              </small>
+            }
+          </label>
+
+          <label>
+            Apellido
+            <input
+              type="text"
+              formControlName="lastName"
+              placeholder="Apellido"
+              maxlength="25"
+            />
+            @if (userForm.get('lastName')?.touched && userForm.get('lastName')?.errors) {
+              <small class="field-error">
+                @if (userForm.get('lastName')?.hasError('required')) {
+                  El apellido es obligatorio.
+                } @else if (userForm.get('lastName')?.hasError('pattern')) {
+                  Solo se permiten letras.
+                } @else if (userForm.get('lastName')?.hasError('minlength')) {
+                  Debe tener al menos 2 letras.
+                } @else if (userForm.get('lastName')?.hasError('maxlength')) {
+                  No puede superar los 25 caracteres.
+                }
+              </small>
+            }
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Correo electrónico
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="correo@ejemplo.com"
+            />
+            @if (userForm.get('email')?.touched && userForm.get('email')?.errors) {
+              <small class="field-error">
+                @if (userForm.get('email')?.hasError('required')) {
+                  El correo es obligatorio.
+                } @else if (userForm.get('email')?.hasError('email')) {
+                  Ingresa un correo válido.
+                }
+              </small>
+            }
+          </label>
+
+          <label>
+            Nombre de usuario
+            <input
+              type="text"
+              formControlName="username"
+              placeholder="nombredeusuario"
+              maxlength="15"
+            />
+            @if (userForm.get('username')?.touched && userForm.get('username')?.errors) {
+              <small class="field-error">
+                @if (userForm.get('username')?.hasError('required')) {
+                  El usuario es obligatorio.
+                } @else if (userForm.get('username')?.hasError('minlength')) {
+                  Mínimo 3 caracteres.
+                } @else if (userForm.get('username')?.hasError('maxlength')) {
+                  Máximo 15 caracteres.
+                } @else if (userForm.get('username')?.hasError('pattern')) {
+                  Solo letras, números, puntos y guiones.
+                }
+              </small>
+            }
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Contraseña
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Mínimo 8 caracteres"
+            />
+            <span class="field-hint">Mínimo 8 caracteres, 1 mayúscula y 1 número.</span>
+            @if (userForm.get('password')?.touched && userForm.get('password')?.errors) {
+              <small class="field-error">
+                @if (userForm.get('password')?.hasError('required')) {
+                  La contraseña es obligatoria.
+                } @else {
+                  Mínimo 8 caracteres, 1 mayúscula y 1 número.
+                }
+              </small>
+            }
+          </label>
+
+          <label>
+            Fecha de nacimiento
+            <input type="date" formControlName="birthdate" />
+            @if (userForm.get('birthdate')?.touched && userForm.get('birthdate')?.errors) {
+              <small class="field-error">La fecha es obligatoria.</small>
+            }
+          </label>
+        </div>
+
+        <!-- Selector de Rol (Radio buttons según consigna) -->
+        <div class="role-selector-group">
+          <span class="group-label">Perfil de permisos</span>
+          <div class="radio-options">
+            <label class="radio-card" [class.selected]="userForm.get('role')?.value === 'usuario'">
+              <input type="radio" formControlName="role" value="usuario" />
+              <div class="radio-info">
+                <span class="radio-title">Lector (usuario estándar)</span>
+                <span class="radio-desc">Puede publicar, comentar y reaccionar a publicaciones.</span>
+              </div>
+            </label>
+
+            <label class="radio-card" [class.selected]="userForm.get('role')?.value === 'administrador'">
+              <input type="radio" formControlName="role" value="administrador" />
+              <div class="radio-info">
+                <span class="radio-title">Administrador</span>
+                <span class="radio-desc">Acceso total al panel de usuarios, moderación y estadísticas.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Foto de perfil opcional -->
+        <div class="avatar-upload-section">
+          <span class="group-label">Foto de perfil (opcional)</span>
+          <input
+            #adminAvatarInput
+            type="file"
+            (change)="onAvatarSelected($event)"
+            accept="image/*"
+            class="visually-hidden-input"
+          />
+
+          @if (avatarPreview()) {
+            <div class="avatar-preview-box">
+              <img [src]="avatarPreview()" alt="Vista previa de foto" class="preview-thumb" />
+              <div class="preview-details">
+                <span class="preview-title">Foto seleccionada</span>
+                <span class="preview-sub">{{ selectedAvatarFile?.name }}</span>
+              </div>
+              <button
+                type="button"
+                class="btn-remove-avatar"
+                (click)="removeAvatar(adminAvatarInput)"
+              >
+                Quitar
+              </button>
+            </div>
+          } @else {
+            <button
+              type="button"
+              class="btn-select-avatar"
+              (click)="adminAvatarInput.click()"
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Seleccionar imagen</span>
+            </button>
+          }
+        </div>
+
+        <label>
+          Descripción breve (opcional)
+          <textarea formControlName="bio" rows="2" placeholder="Biografía o notas sobre el usuario..."></textarea>
+        </label>
+
+        <footer class="modal-footer">
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="isSubmitting()"
+          >
+            {{ isSubmitting() ? 'Registrando...' : 'Registrar usuario' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Modal: Confirmación de cambio de estado (baja/alta lógica) -->
+@if (userToToggle()) {
+  <div class="modal-backdrop">
+    <div
+      class="modal-card modal-confirm"
+      appClickOutside
+      (clickOutside)="cancelToggleStatus()"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+    >
+      <header class="modal-header">
+        <div>
+          <span class="modal-eyebrow">Confirmación de acción</span>
+          <h2 id="confirm-title" class="modal-title">
+            {{ userToToggle()?.isActive ? 'Deshabilitar cuenta' : 'Rehabilitar cuenta' }}
+          </h2>
+        </div>
+      </header>
+
+      <div class="confirm-body">
+        <p>
+          ¿Deseas {{ userToToggle()?.isActive ? 'deshabilitar' : 'rehabilitar' }} la cuenta de
+          <strong>&#64;{{ userToToggle()?.username }}</strong> ({{ userToToggle()?.firstName }} {{ userToToggle()?.lastName }})?
+        </p>
+        <p class="confirm-hint">
+          @if (userToToggle()?.isActive) {
+            El usuario no podrá iniciar sesión en la red social y será notificado al intentar ingresar.
+          } @else {
+            El usuario recuperará inmediatamente el acceso a su cuenta y podrá iniciar sesión.
+          }
+        </p>
+      </div>
+
+      <footer class="modal-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cancelToggleStatus()"
+          [disabled]="isTogglingStatus()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="executeToggleStatus()"
+          [disabled]="isTogglingStatus()"
+        >
+          @if (isTogglingStatus()) {
+            <span>{{ userToToggle()?.isActive ? 'Deshabilitando...' : 'Rehabilitando...' }}</span>
+          } @else {
+            <span>{{ userToToggle()?.isActive ? 'Deshabilitar' : 'Rehabilitar' }}</span>
+          }
+        </button>
+      </footer>
+    </div>
+  </div>
+}

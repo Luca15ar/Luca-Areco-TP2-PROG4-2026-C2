@@ -66,8 +66,16 @@ export class PostsController {
     @Param('id') id: string,
     @Query('userId') queryUserId?: string,
     @Body('userId') bodyUserId?: string,
+    @Headers('authorization') authHeader?: string,
   ) {
-    const userId = queryUserId || bodyUserId;
+    let userId = queryUserId || bodyUserId;
+    if (!userId && authHeader) {
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+      try {
+        const payload = this.jwtService.decode(token) as any;
+        userId = payload?.sub;
+      } catch {}
+    }
     if (!userId) {
       throw new BadRequestException(
         'El identificador del usuario que realiza la baja es obligatorio',

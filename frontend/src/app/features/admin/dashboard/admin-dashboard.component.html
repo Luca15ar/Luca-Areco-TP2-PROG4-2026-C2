@@ -1,0 +1,44 @@
+<main class="dashboard-page">
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <span class="dashboard-eyebrow">Panel de control</span>
+      <h1 class="dashboard-title">Administración</h1>
+      <p class="dashboard-desc">
+        Gestión de lectores, cuentas del sistema y análisis de actividad de la comunidad.
+      </p>
+
+      <nav class="dashboard-tabs" aria-label="Navegación del panel de administración">
+        <a
+          routerLink="/dashboard/usuarios"
+          routerLinkActive="active"
+          class="tab-link"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Usuarios</span>
+        </a>
+
+        <a
+          routerLink="/dashboard/estadisticas"
+          routerLinkActive="active"
+          class="tab-link"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Estadísticas</span>
+        </a>
+      </nav>
+    </header>
+
+    <section class="dashboard-content">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</main>

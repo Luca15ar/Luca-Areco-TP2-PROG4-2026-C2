@@ -97,15 +97,15 @@ export class AuthService {
         throw new UnauthorizedException('Credenciales inválidas');
       }
 
-      if (!user.isActive) {
-        throw new UnauthorizedException(
-          'La cuenta de usuario se encuentra deshabilitada',
-        );
-      }
-
       const isMatch = await bcrypt.compare(loginDto.password, user.password);
       if (!isMatch) {
         throw new UnauthorizedException('Credenciales inválidas');
+      }
+
+      if (!user.isActive) {
+        throw new UnauthorizedException(
+          'Tu cuenta ha sido deshabilitada por un administrador.',
+        );
       }
 
       const token = await this.generateToken(user);
@@ -134,11 +134,19 @@ export class AuthService {
     try {
       const payload = await this.jwtService.verifyAsync(token);
       const user = await this.usersService.findById(payload.sub);
-      if (!user || !user.isActive) {
-        throw new UnauthorizedException('Usuario no válido o deshabilitado');
+      if (!user) {
+        throw new UnauthorizedException('Usuario no encontrado');
+      }
+      if (!user.isActive) {
+        throw new UnauthorizedException(
+          'Tu cuenta ha sido deshabilitada por un administrador.',
+        );
       }
       return this.sanitizeUser(user);
-    } catch {
+    } catch (err: any) {
+      if (err instanceof UnauthorizedException) {
+        throw err;
+      }
       throw new UnauthorizedException('Token inválido o expirado');
     }
   }
