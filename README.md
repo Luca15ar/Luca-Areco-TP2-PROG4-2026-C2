@@ -83,6 +83,8 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Botón de acción con retroalimentación visual de estado de carga (*«Iniciando sesión...»*).
   * Enlace al pie para acceder al formulario de registro en caso de no poseer cuenta.
 
+![Pantalla de inicio de sesión](docs/capturas/01-login.png)
+
 ### 3.2. Pantalla de creación de cuenta (`/register`)
 * **Propósito:** Permitir el alta completa de nuevos integrantes en la comunidad.
 * **Características:**
@@ -92,6 +94,8 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Selector de fecha de nacimiento con icono de calendario estilizado en el tono rosa corporativo.
   * Selector de fotografía de perfil con carga de archivo y previsualización circular inmediata.
   * Botón de acción reactivo con manejo de errores específicos por campo.
+
+![Pantalla de creación de cuenta](docs/capturas/02-registro.png)
 
 ### 3.3. Pantalla de carga y espera (`/loading`)
 * **Propósito:** Servir como transición de carga sosegada para operaciones asíncronas o precargas de datos.
@@ -110,6 +114,10 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Modal para redactar y publicar historias con conteo en tiempo real de palabras y caracteres, selector opcional de imagen y bloqueo estricto del desplazamiento de fondo.
   * Botón flotante accesible y botón de cabecera «Nueva historia» para agilizar la creación desde cualquier punto del muro.
 
+![Muro principal de historias](docs/capturas/03-muro-historias.png)
+
+![Modal de redacción de una nueva historia](docs/capturas/04-modal-nueva-historia.png)
+
 ### 3.5. Pantalla de detalle de publicación (`/posts/:id`)
 * **Propósito:** Experiencia de lectura inmersiva y completa de una historia individual con su conversación comunitaria.
 * **Características:**
@@ -118,6 +126,8 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Sección integral de comentarios: listado paginado, identificación del autor, fecha relativa y borrado lógico de aportes.
   * Formulario reactivo para publicar nuevos comentarios con validación instantánea.
 
+![Detalle de publicación e hilo de comentarios](docs/capturas/05-detalle-historia.png)
+
 ### 3.6. Pantalla de perfil personal (`/profile`)
 * **Propósito:** Espacio íntimo del autor para consultar su trayectoria, estadísticas personales y archivo de publicaciones.
 * **Características:**
@@ -125,6 +135,10 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Tarjetas de métricas consolidadas: total de historias publicadas y suma de valoraciones recibidas.
   * Modal de edición de perfil para actualizar nombre, apellido, usuario, fecha de nacimiento, biografía y fotografía de perfil con previsualización inmediata.
   * Listado de historias de autoría propia con acceso directo a lectura completa o eliminación mediante confirmación modal.
+
+![Perfil personal de autor](docs/capturas/06-perfil-usuario.png)
+
+![Modal de edición de perfil](docs/capturas/07-modal-editar-perfil.png)
 
 ### 3.7. Panel administrativo de gestión de usuarios (`/dashboard` o `/dashboard/usuarios`)
 * **Propósito:** Directorio y consola de control para la administración de integrantes de la plataforma.
@@ -136,6 +150,10 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Control tipo interruptor (*switch*) accesible con animación CSS suave para alternar entre habilitar o deshabilitar cuentas, acompañado de un modal de confirmación con bloqueo de desplazamiento.
   * Formulario modal para el alta de nuevos usuarios desde el panel con asignación directa de rol de acceso.
 
+![Panel administrativo de gestión de usuarios](docs/capturas/08-admin-gestion-usuarios.png)
+
+![Modal de confirmación de deshabilitación de cuenta](docs/capturas/09-modal-confirmacion-estado.png)
+
 ### 3.8. Panel administrativo de estadísticas y métricas (`/dashboard/estadisticas`)
 * **Propósito:** Visualización analítica del rendimiento editorial y la actividad de la comunidad.
 * **Características:**
@@ -143,6 +161,8 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Gráfico de línea temporal SVG nativo: evolución histórica del volumen de comentarios a lo largo del tiempo.
   * Gráfico de dona SVG nativo: proporción y distribución de comentarios recibidos por cada historia.
   * Selector interactivo de periodos: últimas 24 horas, 7 días, 30 días, 90 días, historial completo o rango de fechas personalizado.
+
+![Panel administrativo de estadísticas y métricas](docs/capturas/10-admin-estadisticas.png)
 
 ### 3.9. Modal de control y advertencia de sesión (`SessionModalComponent`)
 * **Propósito:** Salvaguardar la seguridad de la cuenta informando oportunamente antes de la expiración del token JWT.
