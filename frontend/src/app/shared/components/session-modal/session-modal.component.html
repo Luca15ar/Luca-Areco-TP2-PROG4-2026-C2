@@ -1,0 +1,60 @@
+@if (sessionService.showWarningModal()) {
+  <div class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-icon-wrapper" aria-hidden="true">
+        <svg
+          class="modal-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      </div>
+
+      <h2 id="modal-title" class="modal-title">Tu sesión expirará pronto</h2>
+
+      <p class="modal-description">
+        Tu sesión está a punto de caducar por inactividad. ¿Deseas extender tu sesión para continuar navegando?
+      </p>
+
+      <div class="countdown-badge">
+        <span>Tiempo restante:</span>
+        <strong class="countdown-number">{{ sessionService.secondsRemaining() }} s</strong>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn-extend"
+          [disabled]="sessionService.isRefreshing()"
+          (click)="onExtend()"
+        >
+          @if (sessionService.isRefreshing()) {
+            <span>Extendiendo...</span>
+          } @else {
+            <span>Extender sesión</span>
+          }
+        </button>
+
+        <button
+          type="button"
+          class="btn-logout"
+          [disabled]="sessionService.isRefreshing()"
+          (click)="onLogout()"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}

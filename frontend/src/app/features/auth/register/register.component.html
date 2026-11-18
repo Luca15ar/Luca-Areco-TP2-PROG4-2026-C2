@@ -21,7 +21,7 @@
         <div class="form-row">
           <label>
             Nombre
-            <input formControlName="firstName" placeholder="Tu nombre" />
+            <input formControlName="firstName" placeholder="Tu nombre" maxlength="25" />
             @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.errors) {
               <small class="field-error">
                 @if (registerForm.get('firstName')?.hasError('required')) {
@@ -30,13 +30,15 @@
                   El nombre solo puede contener letras.
                 } @else if (registerForm.get('firstName')?.hasError('minlength')) {
                   El nombre debe tener al menos 2 letras.
+                } @else if (registerForm.get('firstName')?.hasError('maxlength')) {
+                  El nombre no puede superar los 25 caracteres.
                 }
               </small>
             }
           </label>
           <label>
             Apellido
-            <input formControlName="lastName" placeholder="Tu apellido" />
+            <input formControlName="lastName" placeholder="Tu apellido" maxlength="25" />
             @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.errors) {
               <small class="field-error">
                 @if (registerForm.get('lastName')?.hasError('required')) {
@@ -45,6 +47,8 @@
                   El apellido solo puede contener letras.
                 } @else if (registerForm.get('lastName')?.hasError('minlength')) {
                   El apellido debe tener al menos 2 letras.
+                } @else if (registerForm.get('lastName')?.hasError('maxlength')) {
+                  El apellido no puede superar los 25 caracteres.
                 }
               </small>
             }
@@ -67,13 +71,15 @@
           </label>
           <label>
             Nombre de usuario
-            <input formControlName="username" placeholder="como-te-llamas" />
+            <input formControlName="username" placeholder="como-te-llamas" maxlength="15" />
             @if (registerForm.get('username')?.touched && registerForm.get('username')?.errors) {
               <small class="field-error">
                 @if (registerForm.get('username')?.hasError('required')) {
                   El nombre de usuario es obligatorio.
                 } @else if (registerForm.get('username')?.hasError('minlength')) {
                   El nombre de usuario debe tener al menos 3 caracteres.
+                } @else if (registerForm.get('username')?.hasError('maxlength')) {
+                  El nombre de usuario no puede superar los 15 caracteres.
                 } @else if (registerForm.get('username')?.hasError('pattern')) {
                   Solo letras, números, puntos, guiones y guiones bajos.
                 }

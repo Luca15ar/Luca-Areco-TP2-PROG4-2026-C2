@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { UsersService } from '../users/users.service.js';
 import { CloudinaryService } from '../cloudinary/cloudinary.service.js';
@@ -16,7 +17,23 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly jwtService: JwtService,
   ) {}
+
+  async generateToken(user: {
+    _id: any;
+    email: string;
+    username: string;
+    role: string;
+  }): Promise<string> {
+    const payload = {
+      sub: user._id.toString(),
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    };
+    return this.jwtService.signAsync(payload);
+  }
 
   async register(registerDto: RegisterDto, file?: Express.Multer.File) {
     try {
@@ -54,7 +71,11 @@ export class AuthService {
         isActive: true,
       });
 
-      return this.sanitizeUser(newUser);
+      const token = await this.generateToken(newUser);
+      return {
+        user: this.sanitizeUser(newUser),
+        token,
+      };
     } catch (err: any) {
       if (
         err instanceof BadRequestException ||
@@ -87,7 +108,11 @@ export class AuthService {
         throw new UnauthorizedException('Credenciales inválidas');
       }
 
-      return this.sanitizeUser(user);
+      const token = await this.generateToken(user);
+      return {
+        user: this.sanitizeUser(user),
+        token,
+      };
     } catch (err: any) {
       if (
         err instanceof BadRequestException ||
@@ -99,6 +124,53 @@ export class AuthService {
       throw new InternalServerErrorException(
         `Error al iniciar sesión: ${err?.message || err}`,
       );
+    }
+  }
+
+  async authorize(token?: string) {
+    if (!token) {
+      throw new UnauthorizedException('Token no provisto');
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
+      const user = await this.usersService.findById(payload.sub);
+      if (!user || !user.isActive) {
+        throw new UnauthorizedException('Usuario no válido o deshabilitado');
+      }
+      return this.sanitizeUser(user);
+    } catch {
+      throw new UnauthorizedException('Token inválido o expirado');
+    }
+  }
+
+  async refreshToken(
+    token?: string,
+    userId?: string,
+  ): Promise<{ token: string }> {
+    if (!token && !userId) {
+      throw new UnauthorizedException('Token no provisto');
+    }
+    try {
+      let targetUserId = userId;
+      if (token) {
+        const payload = await this.jwtService.verifyAsync(token, {
+          ignoreExpiration: true,
+        });
+        targetUserId = payload.sub;
+      }
+
+      if (!targetUserId) {
+        throw new UnauthorizedException('Identificador de usuario no válido');
+      }
+
+      const user = await this.usersService.findById(targetUserId);
+      if (!user || !user.isActive) {
+        throw new UnauthorizedException('Usuario no válido o deshabilitado');
+      }
+      const newToken = await this.generateToken(user);
+      return { token: newToken };
+    } catch {
+      throw new UnauthorizedException('Token inválido');
     }
   }
 

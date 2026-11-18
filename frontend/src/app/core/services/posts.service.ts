@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Post, PostsResponse } from '../models/post.model';
+import { Post, PostComment, PostsResponse, CommentsResponse } from '../models/post.model';
 
 declare const process: { env?: Record<string, string | undefined> } | undefined;
 
@@ -87,6 +87,46 @@ export class PostsService {
     return this.http.delete<{ message: string; likesCount: number; isLiked: boolean }>(
       `${this.API_URL}/api/posts/${id}/like?userId=${encodeURIComponent(userId)}`,
       { body: { userId } },
+    );
+  }
+
+  getComments(
+    postId: string,
+    params?: { limit?: number; offset?: number },
+  ): Observable<CommentsResponse> {
+    let httpParams = new HttpParams();
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit.toString());
+    }
+    if (params?.offset !== undefined) {
+      httpParams = httpParams.set('offset', params.offset.toString());
+    }
+    return this.http.get<CommentsResponse>(
+      `${this.API_URL}/api/posts/${postId}/comments`,
+      { params: httpParams },
+    );
+  }
+
+  addComment(
+    postId: string,
+    message: string,
+    authorId?: string,
+  ): Observable<PostComment> {
+    return this.http.post<PostComment>(
+      `${this.API_URL}/api/posts/${postId}/comments`,
+      { message, author: authorId },
+    );
+  }
+
+  updateComment(
+    postId: string,
+    commentId: string,
+    message: string,
+    userId?: string,
+  ): Observable<PostComment> {
+    return this.http.put<PostComment>(
+      `${this.API_URL}/api/posts/${postId}/comments/${commentId}`,
+      { message, userId },
     );
   }
 }

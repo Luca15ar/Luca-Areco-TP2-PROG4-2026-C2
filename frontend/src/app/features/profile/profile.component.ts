@@ -1,5 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { PostsService } from '../../core/services/posts.service';
@@ -8,7 +8,7 @@ import { Post } from '../../core/models/post.model';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })
@@ -21,6 +21,7 @@ export class ProfileComponent implements OnInit {
   readonly user = this.authService.currentUser;
   readonly userPosts = signal<Post[]>([]);
   readonly isLoadingPosts = signal<boolean>(false);
+  readonly unlikingPostIds = signal<Set<string>>(new Set());
 
   // Modal de confirmación de eliminación
   readonly postToDelete = signal<Post | null>(null);
@@ -39,6 +40,7 @@ export class ProfileComponent implements OnInit {
       [
         Validators.required,
         Validators.minLength(2),
+        Validators.maxLength(25),
         Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/),
       ],
     ],
@@ -47,6 +49,7 @@ export class ProfileComponent implements OnInit {
       [
         Validators.required,
         Validators.minLength(2),
+        Validators.maxLength(25),
         Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/),
       ],
     ],
@@ -55,6 +58,7 @@ export class ProfileComponent implements OnInit {
       [
         Validators.required,
         Validators.minLength(3),
+        Validators.maxLength(15),
         Validators.pattern(/^[a-zA-Z0-9_.-]+$/),
       ],
     ],
@@ -95,6 +99,11 @@ export class ProfileComponent implements OnInit {
     } catch {
       return dateStr;
     }
+  }
+
+  handleLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   openEditModal(): void {
@@ -261,6 +270,15 @@ export class ProfileComponent implements OnInit {
     );
 
     if (isLiked) {
+      this.unlikingPostIds.update((s) => new Set(s).add(post._id));
+      setTimeout(() => {
+        this.unlikingPostIds.update((s) => {
+          const next = new Set(s);
+          next.delete(post._id);
+          return next;
+        });
+      }, 500);
+
       this.postsService.unlikePost(post._id, u._id).subscribe({
         next: () => {
           this.userPosts.update((list) =>

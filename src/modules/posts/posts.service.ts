@@ -12,6 +12,7 @@ import { UsersService } from '../users/users.service.js';
 import { CloudinaryService } from '../cloudinary/cloudinary.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { QueryPostsDto } from './dto/query-posts.dto.js';
+import { QueryCommentsDto } from './dto/query-comments.dto.js';
 
 @Injectable()
 export class PostsService {
@@ -298,5 +299,170 @@ export class PostsService {
       likesCount: post.likes.length,
       isLiked: false,
     };
+  }
+
+  async addComment(
+    postId: string,
+    userId: string,
+    message: string,
+  ): Promise<any> {
+    if (!Types.ObjectId.isValid(postId)) {
+      throw new BadRequestException('El identificador de la publicación no es válido');
+    }
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('El identificador del usuario no es válido');
+    }
+
+    const cleanMessage = (message || '').trim();
+    if (!cleanMessage || cleanMessage.length < 2) {
+      throw new BadRequestException('El comentario debe tener al menos 2 caracteres');
+    }
+
+    const user = await this.usersService.findById(userId);
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('Usuario no válido para comentar');
+    }
+
+    const post = await this.postModel.findOne({
+      _id: new Types.ObjectId(postId),
+      isDeleted: false,
+    });
+
+    if (!post) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const commentId = new Types.ObjectId();
+    const now = new Date();
+    const newComment = {
+      _id: commentId,
+      author: new Types.ObjectId(userId),
+      message: cleanMessage,
+      isEdited: false,
+      createdAt: now,
+    };
+
+    post.comments.push(newComment as any);
+    await post.save();
+
+    return {
+      _id: commentId.toString(),
+      message: cleanMessage,
+      isEdited: false,
+      createdAt: now,
+      author: {
+        _id: user._id.toString(),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        avatarUrl: user.avatarUrl,
+      },
+    };
+  }
+
+  async getComments(
+    postId: string,
+    queryDto: QueryCommentsDto,
+  ): Promise<{
+    comments: any[];
+    total: number;
+    limit: number;
+    offset: number;
+    hasMore: boolean;
+  }> {
+    if (!Types.ObjectId.isValid(postId)) {
+      throw new BadRequestException('El identificador de la publicación no es válido');
+    }
+
+    const post = await this.postModel
+      .findOne({ _id: new Types.ObjectId(postId), isDeleted: false })
+      .populate('comments.author', 'firstName lastName username avatarUrl')
+      .exec();
+
+    if (!post) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const limit = queryDto.limit && Number(queryDto.limit) > 0 ? Number(queryDto.limit) : 5;
+    const offset = queryDto.offset && Number(queryDto.offset) >= 0 ? Number(queryDto.offset) : 0;
+
+    const allComments = (post.comments || []).slice();
+    allComments.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    const total = allComments.length;
+    const paginated = allComments.slice(offset, offset + limit);
+    const hasMore = offset + paginated.length < total;
+
+    return {
+      comments: paginated,
+      total,
+      limit,
+      offset,
+      hasMore,
+    };
+  }
+
+  async updateComment(
+    postId: string,
+    commentId: string,
+    userId: string,
+    message: string,
+  ): Promise<any> {
+    if (!Types.ObjectId.isValid(postId)) {
+      throw new BadRequestException('El identificador de la publicación no es válido');
+    }
+    if (!Types.ObjectId.isValid(commentId)) {
+      throw new BadRequestException('El identificador del comentario no es válido');
+    }
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('El identificador del usuario no es válido');
+    }
+
+    const cleanMessage = (message || '').trim();
+    if (!cleanMessage || cleanMessage.length < 2) {
+      throw new BadRequestException('El comentario debe tener al menos 2 caracteres');
+    }
+
+    const post = await this.postModel.findOne({
+      _id: new Types.ObjectId(postId),
+      isDeleted: false,
+    });
+
+    if (!post) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const comment = post.comments.find(
+      (c: any) => c._id?.toString() === commentId,
+    );
+
+    if (!comment) {
+      throw new NotFoundException('Comentario no encontrado');
+    }
+
+    const commentAuthorId =
+      (comment.author as any)?._id?.toString() || comment.author.toString();
+    if (commentAuthorId !== userId) {
+      throw new ForbiddenException('Solo el autor puede editar este comentario');
+    }
+
+    comment.message = cleanMessage;
+    comment.isEdited = true;
+
+    await post.save();
+
+    const updatedPost = await this.postModel
+      .findOne({ _id: new Types.ObjectId(postId) })
+      .populate('comments.author', 'firstName lastName username avatarUrl')
+      .exec();
+
+    const updatedComment = updatedPost?.comments.find(
+      (c: any) => c._id?.toString() === commentId,
+    );
+
+    return updatedComment || comment;
   }
 }

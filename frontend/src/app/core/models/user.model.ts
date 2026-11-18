@@ -15,3 +15,8 @@ export interface User {
   updatedAt?: string;
 }
 
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+

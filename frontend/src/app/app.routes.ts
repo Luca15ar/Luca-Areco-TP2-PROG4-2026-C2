@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  // La primera pantalla que ve el usuario no autenticado es login
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // La primera pantalla al abrir la app verifica la sesión mediante loading
+  { path: '', redirectTo: 'loading', pathMatch: 'full' },
   {
     path: 'login',
     loadComponent: () =>
@@ -23,6 +23,13 @@ export const routes: Routes = [
     path: 'posts',
     loadComponent: () =>
       import('./features/posts/posts.component').then((m) => m.PostsComponent),
+  },
+  {
+    path: 'posts/:id',
+    loadComponent: () =>
+      import('./features/posts/post-detail/post-detail.component').then(
+        (m) => m.PostDetailComponent,
+      ),
   },
   {
     path: 'profile',

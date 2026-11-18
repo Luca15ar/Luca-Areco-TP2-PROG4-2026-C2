@@ -5,12 +5,14 @@ import { PostsService } from './posts.service.js';
 import { PostsController } from './posts.controller.js';
 import { UsersModule } from '../users/users.module.js';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module.js';
+import { AuthModule } from '../auth/auth.module.js';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     UsersModule,
     CloudinaryModule,
+    AuthModule,
   ],
   controllers: [PostsController],
   providers: [PostsService],

@@ -215,4 +215,152 @@ describe('PostsService', () => {
       expect(res.likesCount).toBe(0);
     });
   });
+
+  describe('comentarios', () => {
+    it('debe agregar un comentario a una publicación', async () => {
+      vi.spyOn(mockUsersService, 'findById').mockResolvedValue({
+        _id: new Types.ObjectId(validAuthorId),
+        firstName: 'Luca',
+        lastName: 'Areco',
+        username: 'lucaa',
+        avatarUrl: '',
+        isActive: true,
+      } as any);
+
+      const mockPost = {
+        _id: new Types.ObjectId(validPostId),
+        comments: [],
+        save: vi.fn().mockResolvedValue(true),
+      };
+
+      mockPostModel.findOne.mockResolvedValue(mockPost);
+
+      const res = await postsService.addComment(
+        validPostId,
+        validAuthorId,
+        'Excelente relato, muy inspirador',
+      );
+
+      expect(res).toBeDefined();
+      expect(res.message).toBe('Excelente relato, muy inspirador');
+      expect(res.author.username).toBe('lucaa');
+      expect(res.isEdited).toBe(false);
+      expect(mockPost.comments.length).toBe(1);
+    });
+
+    it('debe rechazar un comentario con menos de 2 caracteres', async () => {
+      await expect(
+        postsService.addComment(validPostId, validAuthorId, 'a'),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('debe obtener comentarios ordenados y paginados', async () => {
+      const comment1 = {
+        _id: new Types.ObjectId(),
+        message: 'Primer comentario',
+        createdAt: new Date('2026-11-01T10:00:00Z'),
+        author: { username: 'user1' },
+      };
+      const comment2 = {
+        _id: new Types.ObjectId(),
+        message: 'Segundo comentario (más reciente)',
+        createdAt: new Date('2026-11-02T10:00:00Z'),
+        author: { username: 'user2' },
+      };
+
+      const mockPost = {
+        _id: new Types.ObjectId(validPostId),
+        comments: [comment1, comment2],
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockResolvedValue({
+          _id: new Types.ObjectId(validPostId),
+          comments: [comment1, comment2],
+        }),
+      };
+
+      mockPostModel.findOne.mockReturnValue({
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockResolvedValue(mockPost),
+      });
+
+      const res = await postsService.getComments(validPostId, {
+        limit: '5',
+        offset: '0',
+      });
+
+      expect(res.total).toBe(2);
+      expect(res.comments[0].message).toBe('Segundo comentario (más reciente)');
+      expect(res.hasMore).toBe(false);
+    });
+
+    it('debe permitir editar el comentario al autor del mismo', async () => {
+      const commentId = new Types.ObjectId().toString();
+      const mockComment = {
+        _id: new Types.ObjectId(commentId),
+        author: new Types.ObjectId(validAuthorId),
+        message: 'Mensaje original',
+        isEdited: false,
+      };
+
+      const mockPost = {
+        _id: new Types.ObjectId(validPostId),
+        comments: [mockComment],
+        save: vi.fn().mockResolvedValue(true),
+      };
+
+      mockPostModel.findOne
+        .mockResolvedValueOnce(mockPost)
+        .mockReturnValueOnce({
+          populate: vi.fn().mockReturnThis(),
+          exec: vi.fn().mockResolvedValue({
+            _id: new Types.ObjectId(validPostId),
+            comments: [
+              {
+                ...mockComment,
+                message: 'Mensaje editado con éxito',
+                isEdited: true,
+                author: { username: 'lucaa' },
+              },
+            ],
+          }),
+        });
+
+      const res = await postsService.updateComment(
+        validPostId,
+        commentId,
+        validAuthorId,
+        'Mensaje editado con éxito',
+      );
+
+      expect(res.message).toBe('Mensaje editado con éxito');
+      expect(res.isEdited).toBe(true);
+    });
+
+    it('debe prohibir editar el comentario si el usuario no es el autor', async () => {
+      const otherUserId = new Types.ObjectId().toString();
+      const commentId = new Types.ObjectId().toString();
+      const mockComment = {
+        _id: new Types.ObjectId(commentId),
+        author: new Types.ObjectId(validAuthorId),
+        message: 'Mensaje original',
+        isEdited: false,
+      };
+
+      const mockPost = {
+        _id: new Types.ObjectId(validPostId),
+        comments: [mockComment],
+      };
+
+      mockPostModel.findOne.mockResolvedValue(mockPost);
+
+      await expect(
+        postsService.updateComment(
+          validPostId,
+          commentId,
+          otherUserId,
+          'Intento de edición',
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
 });

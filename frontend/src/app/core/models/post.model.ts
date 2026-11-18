@@ -39,3 +39,11 @@ export interface PostsResponse {
   page?: number;
   totalPages?: number;
 }
+
+export interface CommentsResponse {
+  comments: PostComment[];
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+}

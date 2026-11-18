@@ -51,49 +51,84 @@
   </header>
 
   <!-- Título inmediatamente debajo de la cabecera -->
-  <h2 class="article-title">{{ post().title }}</h2>
+  <h2 class="article-title">
+    <a [routerLink]="['/posts', post()._id]" class="article-title-link">{{ post().title }}</a>
+  </h2>
 
-  <!-- Extracto / Mensaje -->
-  <p class="article-excerpt">{{ post().content || post().message }}</p>
+  <!-- Extracto / Mensaje con vista previa para incentivar la lectura completa -->
+  <p class="article-excerpt">
+    <a [routerLink]="['/posts', post()._id]" class="article-excerpt-link">
+      {{ truncatedExcerpt() }}
+    </a>
+    @if (isLongStory()) {
+      <a [routerLink]="['/posts', post()._id]" class="excerpt-read-more">Leer más</a>
+    }
+  </p>
 
   <!-- Imagen destacada a ancho completo -->
   @if (post().imageUrl) {
     <div class="article-media">
-      <img [src]="post().imageUrl" [alt]="post().title" class="article-image" loading="lazy" />
+      <a [routerLink]="['/posts', post()._id]" class="article-media-link">
+        <img [src]="post().imageUrl" [alt]="post().title" class="article-image" loading="lazy" />
+      </a>
     </div>
   }
 
-  <!-- Barra de acciones: me gusta a la izquierda, leer historia a la derecha -->
+  <!-- Barra de acciones: me gusta y comentarios a la izquierda, leer historia a la derecha -->
   <footer class="article-footer">
-    <button
-      type="button"
-      class="btn-like"
-      [class.liked]="isLiked()"
-      (click)="onLike()"
-      [attr.aria-label]="isLiked() ? 'Quitar me gusta' : 'Dar me gusta'"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        width="16"
-        height="16"
-        stroke="currentColor"
-        stroke-width="2"
-        [attr.fill]="isLiked() ? 'currentColor' : 'none'"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+    <div class="article-actions-left">
+      <button
+        type="button"
+        class="btn-like"
+        [class.liked]="isLiked()"
+        [class.unliking]="isUnliking()"
+        (click)="onLike()"
+        [attr.aria-label]="isLiked() ? 'Quitar me gusta' : 'Dar me gusta'"
       >
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-      </svg>
-      <span class="likes-count">{{ post().likes.length }}</span>
-    </button>
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          stroke="currentColor"
+          stroke-width="2"
+          [attr.fill]="isLiked() ? 'currentColor' : 'none'"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span class="likes-count">{{ post().likes.length }}</span>
+      </button>
 
-    <span class="read-story-link">
+      <a
+        [routerLink]="['/posts', post()._id]"
+        class="btn-comments-pill"
+        title="Ver comentarios"
+        aria-label="Ver comentarios"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="15"
+          height="15"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="comments-count">{{ post().comments?.length || 0 }}</span>
+      </a>
+    </div>
+
+    <a [routerLink]="['/posts', post()._id]" class="read-story-link">
       <span>Leer historia</span>
       <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <line x1="7" y1="17" x2="17" y2="7"></line>
         <polyline points="7 7 17 7 17 17"></polyline>
       </svg>
-    </span>
+    </a>
   </footer>
 
   <!-- Separador inferior -->
