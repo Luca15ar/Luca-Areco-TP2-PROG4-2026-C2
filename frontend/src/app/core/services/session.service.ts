@@ -19,21 +19,16 @@ export class SessionService {
   private countdownInterval: any = null;
   private isMonitoring = false;
 
-  private readonly activityEvents = [
-    'mousemove',
-    'keydown',
-    'touchstart',
-    'scroll',
-    'click',
-  ];
-
-  private readonly boundResetInactivity = () => this.handleUserActivity();
-
   constructor() {
     effect(() => {
       const loggedIn = this.authService.isLoggedIn();
-      if (loggedIn) {
-        this.startMonitoring();
+      const token = this.authService.currentToken();
+
+      if (loggedIn && token) {
+        if (!this.isMonitoring) {
+          this.isMonitoring = true;
+        }
+        this.scheduleWarning();
       } else {
         this.stopMonitoring();
       }
@@ -43,13 +38,11 @@ export class SessionService {
   startMonitoring(): void {
     if (this.isMonitoring) return;
     this.isMonitoring = true;
-    this.attachActivityListeners();
-    this.resetTimers();
+    this.scheduleWarning();
   }
 
   stopMonitoring(): void {
     this.isMonitoring = false;
-    this.detachActivityListeners();
     this.clearAllTimers();
     this.showWarningModal.set(false);
   }
@@ -57,10 +50,13 @@ export class SessionService {
   extendSession(): void {
     this.isRefreshing.set(true);
     this.authService.refreshToken().subscribe({
-      next: () => {
+      next: (res) => {
         this.isRefreshing.set(false);
         this.showWarningModal.set(false);
-        this.resetTimers();
+        if (res && res.token) {
+          this.authService.setToken(res.token);
+        }
+        this.scheduleWarning();
       },
       error: () => {
         this.isRefreshing.set(false);
@@ -75,43 +71,76 @@ export class SessionService {
     this.router.navigate(['/login']);
   }
 
-  private handleUserActivity(): void {
-    if (this.showWarningModal()) {
-      return;
-    }
-    this.resetTimers();
-  }
-
-  private resetTimers(): void {
+  /**
+   * Programa la alarma preventiva basada en la caducidad real del token JWT.
+   * La alerta se muestra exactamente cuando resta el tiempo configurado para el conteo regresivo,
+   * garantizando que el usuario sea alertado incluso mientras interactúa con la aplicación.
+   */
+  scheduleWarning(): void {
     this.clearAllTimers();
     this.showWarningModal.set(false);
 
     if (typeof window === 'undefined') return;
 
+    const expMs = this.getTokenExpMs();
+    let delayMs: number;
+    let countdownSec: number;
+
+    if (expMs) {
+      const totalRemainingMs = expMs - Date.now();
+      const countdownMs = SESSION_CONFIG.COUNTDOWN_SECONDS * 1000;
+
+      if (totalRemainingMs <= 0) {
+        this.logoutAndRedirect();
+        return;
+      }
+
+      if (totalRemainingMs <= countdownMs) {
+        countdownSec = Math.max(1, Math.floor(totalRemainingMs / 1000));
+        this.triggerWarning(countdownSec);
+        return;
+      }
+
+      delayMs = totalRemainingMs - countdownMs;
+      countdownSec = SESSION_CONFIG.COUNTDOWN_SECONDS;
+    } else {
+      delayMs = SESSION_CONFIG.WARNING_TIME_MS;
+      countdownSec = SESSION_CONFIG.COUNTDOWN_SECONDS;
+    }
+
     this.ngZone.runOutsideAngular(() => {
       this.warningTimer = setTimeout(() => {
         this.ngZone.run(() => {
-          this.triggerWarning();
+          this.triggerWarning(countdownSec);
         });
-      }, SESSION_CONFIG.WARNING_TIME_MS);
+      }, delayMs);
     });
   }
 
-  private triggerWarning(): void {
+  private triggerWarning(initialCountdown: number = SESSION_CONFIG.COUNTDOWN_SECONDS): void {
     this.showWarningModal.set(true);
-    this.secondsRemaining.set(SESSION_CONFIG.COUNTDOWN_SECONDS);
+    this.secondsRemaining.set(initialCountdown);
 
     this.clearCountdown();
 
     this.ngZone.runOutsideAngular(() => {
       this.countdownInterval = setInterval(() => {
         this.ngZone.run(() => {
-          const remaining = this.secondsRemaining() - 1;
-          this.secondsRemaining.set(remaining);
+          const expMs = this.getTokenExpMs();
+          let remaining: number;
+
+          if (expMs) {
+            remaining = Math.floor((expMs - Date.now()) / 1000);
+          } else {
+            remaining = this.secondsRemaining() - 1;
+          }
 
           if (remaining <= 0) {
+            this.secondsRemaining.set(0);
             this.clearCountdown();
             this.logoutAndRedirect();
+          } else {
+            this.secondsRemaining.set(remaining);
           }
         });
       }, 1000);
@@ -133,19 +162,27 @@ export class SessionService {
     }
   }
 
-  private attachActivityListeners(): void {
-    if (typeof window === 'undefined') return;
-    this.activityEvents.forEach((eventName) => {
-      window.addEventListener(eventName, this.boundResetInactivity, {
-        passive: true,
-      });
-    });
-  }
-
-  private detachActivityListeners(): void {
-    if (typeof window === 'undefined') return;
-    this.activityEvents.forEach((eventName) => {
-      window.removeEventListener(eventName, this.boundResetInactivity);
-    });
+  private getTokenExpMs(): number | null {
+    const token = this.authService.getToken();
+    if (!token) return null;
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const base64Url = parts[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      );
+      const payload = JSON.parse(jsonPayload);
+      if (typeof payload.exp === 'number') {
+        return payload.exp * 1000;
+      }
+    } catch {
+      return null;
+    }
+    return null;
   }
 }
