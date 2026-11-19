@@ -30,7 +30,9 @@ export class LoadingComponent implements OnInit {
           (err?.error?.message?.includes('deshabilitado') ||
             err?.error?.message?.includes('desactivado'));
         this.router.navigate(['/login'], {
-          queryParams: isDeactivated ? { deactivated: 'true' } : undefined,
+          queryParams: isDeactivated
+            ? { deactivated: 'true' }
+            : { expired: 'true' },
         });
       },
     });

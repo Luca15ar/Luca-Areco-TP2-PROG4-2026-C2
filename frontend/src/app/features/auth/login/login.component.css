@@ -23,6 +23,28 @@
   justify-content: center;
 }
 
+.auth-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin-bottom: 0.75rem;
+}
+
+.auth-banner-warning {
+  border-left: 3px solid var(--color-accent);
+  background: rgba(251, 113, 133, 0.12);
+  color: #fecdd3;
+}
+
+.auth-banner-warning svg {
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
 .auth-error {
   border-left: 2px solid var(--color-accent);
   background: rgba(251, 113, 133, 0.1);

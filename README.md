@@ -104,6 +104,8 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Disco central con la letra inicial de Trama rodeado por dos anillos concéntricos con animación de pulsación suave en CSS puro.
   * Leyenda inferior con tipografía serif en estilo *sentence case*: *«Tejiendo historias...»*.
 
+![Pantalla de carga y espera](docs/capturas/11-pantalla-carga.png)
+
 ### 3.4. Pantalla del muro de publicaciones (`/posts`)
 * **Propósito:** Espacio central de lectura y descubrimiento de relatos, crónicas y microensayos.
 * **Características:**
@@ -167,10 +169,13 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
 ### 3.9. Modal de control y advertencia de sesión (`SessionModalComponent`)
 * **Propósito:** Salvaguardar la seguridad de la cuenta informando oportunamente antes de la expiración del token JWT.
 * **Características:**
-  * Detección automática cuando restan 2 minutos para que caduque el token de acceso.
-  * Apertura de un diálogo modal que bloquea el fondo y presenta una cuenta regresiva visual en segundos.
-  * Opción «Continuar sesión» para solicitar silenciosamente la renovación del token sin perder el contexto de navegación.
+  * Detección automática vinculada a la vigencia del token JWT.
+  * Notificación flotante no bloqueante con diseño opaco y centrado inferior que permite continuar interactuando con la plataforma.
+  * Contador dinámico destacado en tono rosa de acento.
+  * Opción «Mantener sesión activa» para solicitar silenciosamente la renovación del token sin perder el contexto de navegación.
   * Opción «Cerrar sesión» para terminar la sesión de manera segura e inmediata.
+
+![Aviso de expiración de sesión](docs/capturas/12-modal-expiracion-sesion.png)
 
 ### 3.10. Barra de navegación superior (`NavbarComponent`)
 * **Propósito:** Proporcionar orientación, control de identidad y navegación general por la plataforma.
@@ -179,7 +184,7 @@ El sistema cuenta actualmente con las siguientes vistas funcionales y componente
   * Logotipo tipográfico `trama.` en fuente serif con acento en el punto final.
   * Enlace al panel de administración visible de manera exclusiva para usuarios con rol de administrador.
   * Conmutador interactivo de tema visual (modo oscuro / modo claro) con persistencia en el almacenamiento local.
-  * Menú desplegable de usuario que exhibe el avatar del perfil activo y accesos para «Mi perfil» o «Cerrar sesión».
+  * Menú desplegable de usuario que exhibe el avatar del perfil activo y accesos para «Instalar en celular» (PWA) o «Cerrar sesión».
 
 ---
 

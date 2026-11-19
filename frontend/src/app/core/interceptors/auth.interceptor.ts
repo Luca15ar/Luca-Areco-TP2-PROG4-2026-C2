@@ -31,7 +31,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             (error.error.message.includes('deshabilitad') ||
               error.error.message.includes('desactivad'));
           router.navigate(['/login'], {
-            queryParams: isDeactivated ? { deactivated: 'true' } : undefined,
+            queryParams: isDeactivated
+              ? { deactivated: 'true' }
+              : { expired: 'true' },
           });
         }
       }

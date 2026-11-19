@@ -15,6 +15,14 @@ export class NavbarComponent {
   private readonly elementRef = inject(ElementRef);
 
   readonly menuOpen = signal<boolean>(false);
+  readonly showInstallModal = signal<boolean>(false);
+  private deferredPrompt: any = null;
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  onBeforeInstallPrompt(event: Event): void {
+    event.preventDefault();
+    this.deferredPrompt = event;
+  }
 
   toggleMenu(): void {
     this.menuOpen.update((open) => !open);
@@ -34,6 +42,22 @@ export class NavbarComponent {
     this.closeMenu();
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  installApp(): void {
+    this.closeMenu();
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      this.deferredPrompt.userChoice.then(() => {
+        this.deferredPrompt = null;
+      });
+    } else {
+      this.showInstallModal.set(true);
+    }
+  }
+
+  closeInstallModal(): void {
+    this.showInstallModal.set(false);
   }
 
   getUserInitials(): string {

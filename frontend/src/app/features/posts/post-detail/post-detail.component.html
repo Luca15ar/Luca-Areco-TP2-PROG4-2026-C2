@@ -278,28 +278,31 @@
     }
   </div>
 
-  <!-- Modal de confirmación para eliminar publicación -->
+  <!-- Modal personalizado de confirmación de eliminación -->
   @if (isDeleteModalOpen()) {
-    <div class="modal-backdrop">
-      <div class="modal-card modal-confirm" role="alertdialog" aria-modal="true" aria-labelledby="delete-post-title">
+    <div class="modal-backdrop" (click)="closeDeleteModal()">
+      <div class="modal-dialog modal-dialog-sm" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="delete-title">
         <header class="modal-header">
-          <span class="modal-eyebrow">Confirmación</span>
-          <h2 id="delete-post-title" class="modal-title">Eliminar publicación</h2>
+          <h2 id="delete-title" class="modal-title">Eliminar publicación</h2>
         </header>
 
-        <div class="confirm-body">
-          <p>¿Estás seguro de que deseas eliminar esta publicación?</p>
-          <p class="confirm-hint">Esta acción dará de baja la historia y sus comentarios dejarán de estar disponibles.</p>
+        <div class="modal-body">
+          <p>¿Estás seguro de que deseas eliminar «<strong>{{ post()?.title }}</strong>»?</p>
+          <p class="modal-subtext">Esta acción no se puede deshacer.</p>
         </div>
 
-        <footer class="modal-footer">
-          <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()" [disabled]="isDeletingPost()">
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeDeleteModal()" [disabled]="isDeletingPost()">
             Cancelar
           </button>
-          <button type="button" class="btn-modal-delete" (click)="confirmDeletePost()" [disabled]="isDeletingPost()">
-            {{ isDeletingPost() ? 'Eliminando...' : 'Eliminar historia' }}
+          <button type="button" class="btn-primary" (click)="confirmDeletePost()" [disabled]="isDeletingPost()">
+            @if (isDeletingPost()) {
+              <span>Eliminando...</span>
+            } @else {
+              <span>Eliminar</span>
+            }
           </button>
-        </footer>
+        </div>
       </div>
     </div>
   }

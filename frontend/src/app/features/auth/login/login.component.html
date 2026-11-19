@@ -59,6 +59,16 @@
         }
       </label>
 
+      @if (sessionExpired()) {
+        <div class="auth-banner auth-banner-warning" role="status">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Tu sesión ha expirado. Por favor, inicia sesión nuevamente para continuar.</span>
+        </div>
+      }
+
       @if (errorMessage()) {
         <div class="auth-error" role="alert">
           {{ errorMessage() }}

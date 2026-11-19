@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
 
   readonly showPassword = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly sessionExpired = signal<boolean>(false);
   readonly isLoading = signal<boolean>(false);
 
   readonly loginForm = this.fb.group({
@@ -33,10 +34,14 @@ export class LoginComponent implements OnInit {
           'Tu cuenta ha sido deshabilitada por un administrador.',
         );
       }
+      if (params.get('expired') === 'true') {
+        this.sessionExpired.set(true);
+      }
     });
   }
 
   onSubmit(): void {
+    this.sessionExpired.set(false);
     const { login, password } = this.loginForm.value;
     const allEmpty = !login?.trim() && !password?.trim();
 

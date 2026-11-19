@@ -75,6 +75,8 @@ describe('SessionService', () => {
     sessionService.scheduleWarning();
 
     expect(logoutSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/login'], {
+      queryParams: { expired: 'true' },
+    });
   });
 });

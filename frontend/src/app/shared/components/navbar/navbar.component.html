@@ -22,6 +22,14 @@
 
         @if (menuOpen()) {
           <div class="user-dropdown">
+            <button type="button" class="btn-dropdown-item" (click)="installApp()">
+              <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+              </svg>
+              <span>Instalar en celular</span>
+            </button>
+            <div class="dropdown-divider"></div>
             <button type="button" class="btn-dropdown-logout" (click)="handleLogout()">
               <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -36,6 +44,42 @@
     </div>
   </div>
 </header>
+
+<!-- Modal de instrucciones para instalar la aplicación en celular -->
+@if (showInstallModal()) {
+  <div class="modal-backdrop" (click)="closeInstallModal()">
+    <div
+      class="modal-dialog modal-dialog-sm"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="install-title"
+    >
+      <header class="modal-header">
+        <h2 id="install-title" class="modal-title">Instalar aplicación</h2>
+      </header>
+
+      <div class="modal-body">
+        <p>Instala Trama en la pantalla de inicio de tu celular para acceder a pantalla completa y sin conexión:</p>
+
+        <div class="install-instructions">
+          <p>
+            <strong>En Android (Chrome):</strong> Toca el menú de opciones (tres puntos verticales) en la barra superior y pulsa «Instalar aplicación» o «Agregar a la pantalla principal».
+          </p>
+          <p>
+            <strong>En iOS (Safari):</strong> Toca el botón de Compartir en la barra inferior y selecciona «Agregar al inicio».
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" (click)="closeInstallModal()">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- Barra de navegación inferior fija para formato móvil -->
 <nav class="bottom-nav" aria-label="Navegación principal móvil">

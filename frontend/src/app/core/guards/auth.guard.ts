@@ -34,7 +34,9 @@ export const authGuard: CanActivateFn = ():
         (message.includes('deshabilitad') || message.includes('desactivad'));
       return of(
         router.createUrlTree(['/login'], {
-          queryParams: isDeactivated ? { deactivated: 'true' } : undefined,
+          queryParams: isDeactivated
+            ? { deactivated: 'true' }
+            : { expired: 'true' },
         }),
       );
     }),

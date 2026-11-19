@@ -65,10 +65,12 @@ export class SessionService {
     });
   }
 
-  logoutAndRedirect(): void {
+  logoutAndRedirect(isExpired: boolean = false): void {
     this.stopMonitoring();
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'], {
+      queryParams: isExpired ? { expired: 'true' } : undefined,
+    });
   }
 
   /**
@@ -91,7 +93,7 @@ export class SessionService {
       const countdownMs = SESSION_CONFIG.COUNTDOWN_SECONDS * 1000;
 
       if (totalRemainingMs <= 0) {
-        this.logoutAndRedirect();
+        this.logoutAndRedirect(true);
         return;
       }
 
@@ -138,7 +140,7 @@ export class SessionService {
           if (remaining <= 0) {
             this.secondsRemaining.set(0);
             this.clearCountdown();
-            this.logoutAndRedirect();
+            this.logoutAndRedirect(true);
           } else {
             this.secondsRemaining.set(remaining);
           }

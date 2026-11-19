@@ -398,7 +398,7 @@ export class PostsService {
       throw new NotFoundException('Publicación no encontrada');
     }
 
-    const limit = queryDto.limit && Number(queryDto.limit) > 0 ? Number(queryDto.limit) : 5;
+    const limit = queryDto.limit && Number(queryDto.limit) > 0 ? Number(queryDto.limit) : 3;
     const offset = queryDto.offset && Number(queryDto.offset) >= 0 ? Number(queryDto.offset) : 0;
 
     const allComments = (post.comments || []).slice();

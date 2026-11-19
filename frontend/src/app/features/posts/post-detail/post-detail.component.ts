@@ -42,7 +42,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   readonly post = signal<Post | null>(null);
   readonly comments = signal<PostComment[]>([]);
   readonly totalComments = signal<number>(0);
-  readonly commentsLimit = signal<number>(5);
+  readonly commentsLimit = signal<number>(3);
   readonly commentsOffset = signal<number>(0);
   readonly hasMoreComments = signal<boolean>(false);
 

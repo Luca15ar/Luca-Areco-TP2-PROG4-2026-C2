@@ -84,6 +84,12 @@ export class AdminStatsComponent implements OnInit {
     return Math.max(...list.map((t) => t.count), 1);
   });
 
+  readonly midTimelineCount = computed(() => {
+    const max = this.maxTimelineCount();
+    if (max <= 1) return null;
+    return Math.round(max / 2);
+  });
+
   readonly timelinePoints = computed(() => {
     const list = this.commentsTimeline().timeline;
     if (list.length === 0) return [];
@@ -91,16 +97,19 @@ export class AdminStatsComponent implements OnInit {
     const max = this.maxTimelineCount();
     const width = 500;
     const height = 180;
-    const padding = 30;
-    const availableWidth = width - padding * 2;
-    const availableHeight = height - padding * 2;
+    const paddingLeft = 48;
+    const paddingRight = 24;
+    const paddingTop = 28;
+    const paddingBottom = 28;
+    const availableWidth = width - paddingLeft - paddingRight;
+    const availableHeight = height - paddingTop - paddingBottom;
 
     const step = list.length > 1 ? availableWidth / (list.length - 1) : availableWidth / 2;
 
     return list.map((item, index) => {
-      const x = padding + (list.length === 1 ? availableWidth / 2 : index * step);
+      const x = paddingLeft + (list.length === 1 ? availableWidth / 2 : index * step);
       const ratio = item.count / max;
-      const y = height - padding - ratio * availableHeight;
+      const y = height - paddingBottom - ratio * availableHeight;
       return {
         x,
         y,
@@ -122,9 +131,7 @@ export class AdminStatsComponent implements OnInit {
   readonly areaSvgPath = computed(() => {
     const pts = this.timelinePoints();
     if (pts.length === 0) return '';
-    const height = 180;
-    const padding = 30;
-    const bottomY = height - padding;
+    const bottomY = 180 - 28;
     const line = this.lineSvgPath();
     const lastPt = pts[pts.length - 1];
     const firstPt = pts[0];

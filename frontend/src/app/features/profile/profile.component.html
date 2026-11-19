@@ -147,7 +147,7 @@
           <button type="button" class="btn-secondary" (click)="closeDeleteModal()" [disabled]="isDeleting()">
             Cancelar
           </button>
-          <button type="button" class="btn-danger-submit" (click)="confirmDelete()" [disabled]="isDeleting()">
+          <button type="button" class="btn-primary" (click)="confirmDelete()" [disabled]="isDeleting()">
             @if (isDeleting()) {
               <span>Eliminando...</span>
             } @else {
