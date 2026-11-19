@@ -5,6 +5,7 @@ import { filter, map } from 'rxjs';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { SessionModalComponent } from './shared/components/session-modal/session-modal.component';
 import { SessionService } from './core/services/session.service';
+import { PwaService } from './core/services/pwa.service';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { SessionService } from './core/services/session.service';
 export class App {
   private readonly router = inject(Router);
   readonly sessionService = inject(SessionService);
+  readonly pwaService = inject(PwaService);
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(

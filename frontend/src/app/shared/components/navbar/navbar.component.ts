@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { PwaService } from '../../../core/services/pwa.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,18 +12,12 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class NavbarComponent {
   readonly authService = inject(AuthService);
+  readonly pwaService = inject(PwaService);
   private readonly router = inject(Router);
   private readonly elementRef = inject(ElementRef);
 
   readonly menuOpen = signal<boolean>(false);
   readonly showInstallModal = signal<boolean>(false);
-  private deferredPrompt: any = null;
-
-  @HostListener('window:beforeinstallprompt', ['$event'])
-  onBeforeInstallPrompt(event: Event): void {
-    event.preventDefault();
-    this.deferredPrompt = event;
-  }
 
   toggleMenu(): void {
     this.menuOpen.update((open) => !open);
@@ -44,14 +39,10 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
-  installApp(): void {
+  async installApp(): Promise<void> {
     this.closeMenu();
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-      this.deferredPrompt.userChoice.then(() => {
-        this.deferredPrompt = null;
-      });
-    } else {
+    const installed = await this.pwaService.installApp();
+    if (!installed && !this.pwaService.canInstall()) {
       this.showInstallModal.set(true);
     }
   }
