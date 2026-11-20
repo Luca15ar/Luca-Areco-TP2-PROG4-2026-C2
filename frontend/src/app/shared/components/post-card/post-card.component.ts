@@ -1,11 +1,12 @@
 import { Component, computed, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Post } from '../../../core/models/post.model';
+import { ImageFallbackDirective } from '../../directives/image-fallback.directive';
 
 @Component({
   selector: 'app-post-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ImageFallbackDirective],
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.css'],
 })

@@ -29,7 +29,7 @@
           <div class="author-block">
             <div class="author-avatar-wrapper">
               @if (currentPost.author.avatarUrl) {
-                <img [src]="currentPost.author.avatarUrl" [alt]="authorFullName()" class="author-avatar" />
+                <img [src]="currentPost.author.avatarUrl" [alt]="authorFullName()" appImageFallback class="author-avatar" />
               } @else {
                 <span class="author-avatar-fallback">{{ authorInitial() }}</span>
               }
@@ -68,7 +68,7 @@
         <!-- Imagen destacada si existe -->
         @if (currentPost.imageUrl) {
           <div class="post-detail-media">
-            <img [src]="currentPost.imageUrl" [alt]="currentPost.title" class="detail-image" />
+            <img [src]="currentPost.imageUrl" [alt]="currentPost.title" appImageFallback class="detail-image" />
           </div>
         }
 
@@ -128,7 +128,7 @@
         <div class="add-comment-card">
           <div class="current-user-avatar">
             @if (currentUser()?.avatarUrl) {
-              <img [src]="currentUser()?.avatarUrl" [alt]="currentUser()?.username" class="avatar-img" />
+              <img [src]="currentUser()?.avatarUrl" [alt]="currentUser()?.username" appImageFallback class="avatar-img" />
             } @else {
               <span class="avatar-fallback">{{ currentUserInitial() }}</span>
             }
@@ -176,7 +176,7 @@
               <article class="comment-item">
                 <div class="comment-avatar-wrapper">
                   @if (comment.author.avatarUrl) {
-                    <img [src]="comment.author.avatarUrl" [alt]="comment.author.firstName" class="comment-avatar" />
+                    <img [src]="comment.author.avatarUrl" [alt]="comment.author.firstName" appImageFallback class="comment-avatar" />
                   } @else {
                     <span class="comment-avatar-fallback">{{ comment.author.firstName.charAt(0).toUpperCase() }}</span>
                   }

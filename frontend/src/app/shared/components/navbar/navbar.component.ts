@@ -2,11 +2,12 @@ import { Component, ElementRef, HostListener, inject, signal } from '@angular/co
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { PwaService } from '../../../core/services/pwa.service';
+import { ImageFallbackDirective } from '../../directives/image-fallback.directive';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, ImageFallbackDirective],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })

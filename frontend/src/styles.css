@@ -287,3 +287,12 @@ a {
   cursor: not-allowed;
 }
 
+/* Respaldo visual para imágenes no encontradas o con error de carga */
+img.image-fallback-active {
+  object-fit: contain !important;
+  background-color: var(--color-accent-subtle, rgba(251, 113, 133, 0.1));
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+

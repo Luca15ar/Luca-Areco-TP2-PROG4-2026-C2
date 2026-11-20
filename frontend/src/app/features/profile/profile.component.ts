@@ -4,11 +4,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { PostsService } from '../../core/services/posts.service';
 import { Post } from '../../core/models/post.model';
+import { ImageFallbackDirective } from '../../shared/directives/image-fallback.directive';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ImageFallbackDirective],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })

@@ -12,11 +12,12 @@ import { FormsModule } from '@angular/forms';
 import { PostsService } from '../../../core/services/posts.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Post, PostComment } from '../../../core/models/post.model';
+import { ImageFallbackDirective } from '../../../shared/directives/image-fallback.directive';
 
 @Component({
   selector: 'app-post-detail',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ImageFallbackDirective],
   templateUrl: './post-detail.component.html',
   styleUrl: './post-detail.component.css',
 })

@@ -14,7 +14,7 @@
       <div class="user-menu-wrapper">
         <button type="button" class="user-avatar-btn" (click)="toggleMenu()" aria-label="Menú de usuario">
           @if (authService.currentUser()?.avatarUrl) {
-            <img [src]="authService.getAvatarUrl(authService.currentUser()?.avatarUrl)" alt="Avatar" class="avatar-img" />
+            <img [src]="authService.getAvatarUrl(authService.currentUser()?.avatarUrl)" alt="Avatar" appImageFallback class="avatar-img" />
           } @else {
             <span class="avatar-text">{{ getUserInitials() }}</span>
           }

@@ -5,7 +5,7 @@
       <header class="author-header">
         <div class="author-avatar-large">
           @if (user()?.avatarUrl) {
-            <img [src]="authService.getAvatarUrl(user()?.avatarUrl)" [alt]="fullName()" class="avatar-photo" />
+            <img [src]="authService.getAvatarUrl(user()?.avatarUrl)" [alt]="fullName()" appImageFallback class="avatar-photo" />
           } @else {
             <span class="avatar-initial">{{ userInitial() }}</span>
           }
@@ -52,7 +52,7 @@
                 @if (post.imageUrl) {
                   <div class="story-image-wrap">
                     <a [routerLink]="['/posts', post._id]" class="story-image-link" title="Ver historia completa">
-                      <img [src]="post.imageUrl" [alt]="post.title" class="story-square-img" loading="lazy" />
+                      <img [src]="post.imageUrl" [alt]="post.title" appImageFallback class="story-square-img" loading="lazy" />
                     </a>
                   </div>
                 }
