@@ -163,6 +163,7 @@
               formControlName="title"
               placeholder="Escribe un título sugerente..."
               maxlength="100"
+              appAutofocus
             />
             @if (createForm.get('title')?.touched && createForm.get('title')?.errors) {
               <small class="field-error">

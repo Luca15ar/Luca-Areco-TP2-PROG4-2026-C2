@@ -5,11 +5,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { PostsService } from '../../core/services/posts.service';
 import { Post } from '../../core/models/post.model';
 import { ImageFallbackDirective } from '../../shared/directives/image-fallback.directive';
+import { AutofocusDirective } from '../../shared/directives/autofocus.directive';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ImageFallbackDirective],
+  imports: [ReactiveFormsModule, RouterLink, ImageFallbackDirective, AutofocusDirective],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })

@@ -5,11 +5,12 @@ import { PostsService } from '../../core/services/posts.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Post } from '../../core/models/post.model';
 import { PostCardComponent } from '../../shared/components/post-card/post-card.component';
+import { AutofocusDirective } from '../../shared/directives/autofocus.directive';
 
 @Component({
   selector: 'app-posts',
   standalone: true,
-  imports: [ReactiveFormsModule, PostCardComponent],
+  imports: [ReactiveFormsModule, PostCardComponent, AutofocusDirective],
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css'],
 })
