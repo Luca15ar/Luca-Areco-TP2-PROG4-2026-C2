@@ -658,3 +658,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   white-space: nowrap;
   border: 0;
 }
+
+/* Skeleton de tarjetas en perfil */
+.skeleton-profile-card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-profile-img {
+  width: 100%;
+  height: 145px;
+  border-radius: 0;
+}
+
+.skeleton-profile-body {
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.skeleton-profile-footer {
+  padding: 0 1.1rem 1.1rem;
+  display: flex;
+  gap: 0.6rem;
+}

@@ -12,10 +12,24 @@
     </nav>
 
     @if (isLoadingPost()) {
-      <div class="state-box loading-state">
-        <div class="spinner"></div>
-        <p>Cargando historia...</p>
-      </div>
+      <article class="skeleton-card skeleton-detail-card" aria-busy="true" aria-label="Cargando historia">
+        <div class="skeleton-detail-header">
+          <span class="skeleton skeleton-circle" style="width: 44px; height: 44px;"></span>
+          <div class="skeleton-detail-meta">
+            <span class="skeleton" style="width: 160px; height: 15px;"></span>
+            <span class="skeleton" style="width: 110px; height: 12px;"></span>
+          </div>
+        </div>
+        <span class="skeleton" style="width: 82%; height: 32px;"></span>
+        <span class="skeleton" style="width: 55%; height: 24px;"></span>
+        <span class="skeleton skeleton-detail-media"></span>
+        <div class="skeleton-detail-body">
+          <span class="skeleton" style="width: 100%; height: 15px;"></span>
+          <span class="skeleton" style="width: 97%; height: 15px;"></span>
+          <span class="skeleton" style="width: 91%; height: 15px;"></span>
+          <span class="skeleton" style="width: 74%; height: 15px;"></span>
+        </div>
+      </article>
     } @else if (postErrorMessage()) {
       <div class="state-box error-state">
         <p>{{ postErrorMessage() }}</p>

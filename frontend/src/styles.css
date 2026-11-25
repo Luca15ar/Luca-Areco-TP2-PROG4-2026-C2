@@ -23,6 +23,8 @@
   --border-subtle: rgba(251, 113, 133, 0.15);
   --border-card-hover: rgba(251, 113, 133, 0.35);
   --text-main: #ffffff;
+  --skeleton-base: rgba(251, 113, 133, 0.08);
+  --skeleton-highlight: rgba(251, 113, 133, 0.18);
 }
 
 [data-theme='light'] {
@@ -44,6 +46,8 @@
   --border-subtle: rgba(190, 24, 93, 0.12);
   --border-card-hover: rgba(190, 24, 93, 0.28);
   --text-main: #2a1b2d;
+  --skeleton-base: #f8e8ec;
+  --skeleton-highlight: #fdf2f4;
 }
 
 * {
@@ -293,6 +297,51 @@ img.image-fallback-active {
   background-color: var(--color-accent-subtle, rgba(251, 113, 133, 0.1));
   box-sizing: border-box;
   padding: 1rem;
+}
+
+/* Skeleton loaders reutilizables */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-pill {
+  border-radius: 999px;
+}
+
+.skeleton-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-surface);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
 }
 
 

@@ -738,3 +738,28 @@
     justify-content: center;
   }
 }
+
+/* Skeleton de métricas y tabla de usuarios */
+.skeleton-metric {
+  width: 52px;
+  height: 28px;
+  margin-top: 0.25rem;
+}
+
+.skeleton-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.skeleton-user-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.skeleton-action-pill {
+  width: 44px;
+  height: 24px;
+  margin-left: auto;
+}

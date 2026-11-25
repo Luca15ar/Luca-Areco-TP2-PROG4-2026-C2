@@ -37,9 +37,22 @@
         <h2 class="stories-section-title">Historias publicadas · {{ formattedPostCount() }}</h2>
 
         @if (isLoadingPosts()) {
-          <div class="profile-state-box">
-            <div class="spinner"></div>
-            <p>Cargando publicaciones...</p>
+          <div class="stories-grid-3col" aria-busy="true" aria-label="Cargando publicaciones">
+            @for (item of [1, 2, 3]; track item) {
+              <article class="skeleton-card skeleton-profile-card">
+                <span class="skeleton skeleton-profile-img"></span>
+                <div class="skeleton-profile-body">
+                  <span class="skeleton" style="width: 90px; height: 11px;"></span>
+                  <span class="skeleton" style="width: 85%; height: 18px;"></span>
+                  <span class="skeleton" style="width: 100%; height: 13px;"></span>
+                  <span class="skeleton" style="width: 70%; height: 13px;"></span>
+                </div>
+                <div class="skeleton-profile-footer">
+                  <span class="skeleton skeleton-pill" style="width: 52px; height: 24px;"></span>
+                  <span class="skeleton skeleton-pill" style="width: 52px; height: 24px;"></span>
+                </div>
+              </article>
+            }
           </div>
         } @else if (userPosts().length === 0) {
           <div class="profile-state-box empty-state">

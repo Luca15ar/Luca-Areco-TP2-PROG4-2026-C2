@@ -25,19 +25,35 @@
   <div class="metrics-grid">
     <div class="metric-card">
       <span class="metric-label">Total de usuarios</span>
-      <span class="metric-value">{{ totalUsersCount() }}</span>
+      @if (isLoading()) {
+        <span class="skeleton skeleton-metric"></span>
+      } @else {
+        <span class="metric-value">{{ totalUsersCount() }}</span>
+      }
     </div>
     <div class="metric-card">
       <span class="metric-label">Cuentas activas</span>
-      <span class="metric-value status-active">{{ activeUsersCount() }}</span>
+      @if (isLoading()) {
+        <span class="skeleton skeleton-metric"></span>
+      } @else {
+        <span class="metric-value status-active">{{ activeUsersCount() }}</span>
+      }
     </div>
     <div class="metric-card">
       <span class="metric-label">Deshabilitadas</span>
-      <span class="metric-value status-disabled">{{ disabledUsersCount() }}</span>
+      @if (isLoading()) {
+        <span class="skeleton skeleton-metric"></span>
+      } @else {
+        <span class="metric-value status-disabled">{{ disabledUsersCount() }}</span>
+      }
     </div>
     <div class="metric-card">
       <span class="metric-label">Administradores</span>
-      <span class="metric-value status-admin">{{ adminUsersCount() }}</span>
+      @if (isLoading()) {
+        <span class="skeleton skeleton-metric"></span>
+      } @else {
+        <span class="metric-value status-admin">{{ adminUsersCount() }}</span>
+      }
     </div>
   </div>
 
@@ -69,9 +85,41 @@
 
   <!-- Listado de usuarios -->
   @if (isLoading()) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <span>Cargando directorio de usuarios...</span>
+    <div class="table-container" aria-busy="true" aria-label="Cargando directorio de usuarios">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Registro</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of [1, 2, 3, 4, 5]; track row) {
+            <tr>
+              <td class="user-cell">
+                <div class="skeleton-user-cell">
+                  <span class="skeleton skeleton-circle" style="width: 36px; height: 36px;"></span>
+                  <div class="skeleton-user-lines">
+                    <span class="skeleton" style="width: 120px; height: 14px;"></span>
+                    <span class="skeleton" style="width: 80px; height: 11px;"></span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="skeleton" style="width: 170px; height: 13px;"></span></td>
+              <td><span class="skeleton skeleton-pill" style="width: 88px; height: 24px;"></span></td>
+              <td><span class="skeleton skeleton-pill" style="width: 72px; height: 24px;"></span></td>
+              <td><span class="skeleton" style="width: 96px; height: 13px;"></span></td>
+              <td class="text-right">
+                <span class="skeleton skeleton-pill skeleton-action-pill"></span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
   } @else if (filteredUsers().length === 0) {
     <div class="empty-state">

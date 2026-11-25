@@ -49,9 +49,34 @@
 
     <!-- Feed de publicaciones -->
     @if (isLoading()) {
-      <div class="feed-state-box loading-state">
-        <div class="spinner"></div>
-        <p>Cargando historias...</p>
+      <div class="posts-feed" aria-busy="true" aria-label="Cargando historias">
+        @for (item of [1, 2, 3]; track item) {
+          <article class="skeleton-card skeleton-post-card">
+            <div class="skeleton-post-header">
+              <span class="skeleton skeleton-circle" style="width: 38px; height: 38px;"></span>
+              <div class="skeleton-post-meta">
+                <span class="skeleton" style="width: 140px; height: 14px;"></span>
+                <span class="skeleton" style="width: 90px; height: 11px;"></span>
+              </div>
+            </div>
+            <span class="skeleton" style="width: 72%; height: 22px;"></span>
+            <div class="skeleton-post-body">
+              <span class="skeleton" style="width: 100%; height: 14px;"></span>
+              <span class="skeleton" style="width: 94%; height: 14px;"></span>
+              <span class="skeleton" style="width: 68%; height: 14px;"></span>
+            </div>
+            @if (item === 1) {
+              <span class="skeleton skeleton-post-media"></span>
+            }
+            <div class="skeleton-post-footer">
+              <div class="skeleton-post-actions">
+                <span class="skeleton skeleton-pill" style="width: 58px; height: 26px;"></span>
+                <span class="skeleton skeleton-pill" style="width: 58px; height: 26px;"></span>
+              </div>
+              <span class="skeleton skeleton-pill" style="width: 84px; height: 16px;"></span>
+            </div>
+          </article>
+        }
       </div>
     } @else if (errorMessage()) {
       <div class="feed-state-box error-state">

@@ -738,3 +738,57 @@
     font-size: 0.68rem;
   }
 }
+
+/* Skeletons de gráficos estadísticos */
+.skeleton-bars-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.skeleton-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.skeleton-line-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.skeleton-line-ticks {
+  display: flex;
+  justify-content: space-between;
+}
+
+.skeleton-donut-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  padding: 0.75rem 0;
+  flex-wrap: wrap;
+}
+
+.skeleton-donut-ring {
+  width: 140px;
+  height: 140px;
+}
+
+.skeleton-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}

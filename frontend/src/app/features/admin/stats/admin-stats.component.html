@@ -76,9 +76,13 @@
 
       <div class="chart-body">
         @if (isLoading()) {
-          <div class="chart-loading">
-            <div class="spinner"></div>
-            <span>Calculando publicaciones...</span>
+          <div class="skeleton-bars-chart" aria-busy="true" aria-label="Cargando publicaciones por usuario">
+            @for (width of ['84%', '66%', '52%', '38%', '24%']; track width) {
+              <div class="skeleton-bar-row">
+                <span class="skeleton" style="width: 110px; height: 13px; flex-shrink: 0;"></span>
+                <span class="skeleton skeleton-pill" [style.width]="width" style="height: 18px;"></span>
+              </div>
+            }
           </div>
         } @else if (postsByUser().users.length === 0) {
           <div class="chart-empty">
@@ -118,9 +122,14 @@
 
       <div class="chart-body">
         @if (isLoading()) {
-          <div class="chart-loading">
-            <div class="spinner"></div>
-            <span>Calculando comentarios...</span>
+          <div class="skeleton-line-chart" aria-busy="true" aria-label="Cargando evolución de comentarios">
+            <span class="skeleton" style="width: 100%; height: 165px;"></span>
+            <div class="skeleton-line-ticks">
+              <span class="skeleton" style="width: 46px; height: 11px;"></span>
+              <span class="skeleton" style="width: 46px; height: 11px;"></span>
+              <span class="skeleton" style="width: 46px; height: 11px;"></span>
+              <span class="skeleton" style="width: 46px; height: 11px;"></span>
+            </div>
           </div>
         } @else if (commentsTimeline().timeline.length === 0) {
           <div class="chart-empty">
@@ -211,9 +220,16 @@
 
       <div class="chart-body">
         @if (isLoading()) {
-          <div class="chart-loading">
-            <div class="spinner"></div>
-            <span>Calculando distribución...</span>
+          <div class="skeleton-donut-layout" aria-busy="true" aria-label="Cargando distribución de comentarios">
+            <span class="skeleton skeleton-circle skeleton-donut-ring"></span>
+            <div class="skeleton-donut-legend">
+              @for (item of [1, 2, 3, 4]; track item) {
+                <div class="skeleton-legend-row">
+                  <span class="skeleton skeleton-circle" style="width: 12px; height: 12px;"></span>
+                  <span class="skeleton" style="width: 140px; height: 13px;"></span>
+                </div>
+              }
+            </div>
           </div>
         } @else if (donutSlices().length === 0) {
           <div class="chart-empty">
